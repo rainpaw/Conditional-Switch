@@ -4,16 +4,13 @@ using UnityEngine;
 
 public class SawMovementScript : MonoBehaviour
 {
-    public float moveSpeed = -0.05f;
+    public float moveSpeed = 5f;
+    public float rotationSpeed = 480f;
 
-    private void Start()
+    private void Update()
     {
-        transform.position = new Vector3(13, transform.position.y, transform.position.z);
-    }
-
-    private void FixedUpdate()
-    {
-        transform.position = new Vector3(transform.position.x + moveSpeed, transform.position.y, transform.position.z);
+        transform.position += (Vector3.left * moveSpeed) * Time.deltaTime;
+        transform.Rotate(new Vector3(transform.rotation.x, transform.rotation.y, (1 * rotationSpeed) * Time.deltaTime));
     }
 
 }
