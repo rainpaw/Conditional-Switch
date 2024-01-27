@@ -8,6 +8,7 @@ using UnityEngine;
 public class PipeSpawnScript : MonoBehaviour
 {
     public GameObject saw;
+    public GameObject questionMarkBlock;
     public float spawnRate = 2f;
     private float timer = 0f;
 
@@ -25,7 +26,12 @@ public class PipeSpawnScript : MonoBehaviour
         }
         else
         {
-            Instantiate(saw, transform.position, transform.rotation);
+            if (Random.Range(1, 5) == 1) {
+                Instantiate(questionMarkBlock, transform.position, transform.rotation);
+            } else
+            {
+                Instantiate(saw, transform.position, transform.rotation);
+            }
             timer = 0;
         }
     }
