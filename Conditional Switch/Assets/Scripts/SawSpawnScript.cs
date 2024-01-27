@@ -26,7 +26,7 @@ public class PipeSpawnScript : MonoBehaviour
         }
         else
         {
-            if (Random.Range(1, 5) == 1) {
+            if (Random.Range(1, 10) == 1) {
                 Instantiate(questionMarkBlock, transform.position, transform.rotation);
             } else
             {

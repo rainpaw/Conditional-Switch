@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,10 +9,17 @@ public class PlayerMoveScript : MonoBehaviour
     public PlayerControls controls;
     public Rigidbody2D rb;
 
+    public LogicSystemScript logic;
+
     private void Awake()
     {
         controls = new PlayerControls();
         controls.Movement.SwitchGravity.performed += ctx => Switch();
+    }
+
+    private void Start()
+    {
+        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicSystemScript>();
     }
 
     private void Switch()
