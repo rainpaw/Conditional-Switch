@@ -27,6 +27,16 @@ public class PlayerMoveScript : MonoBehaviour
         rb.gravityScale = 0 - rb.gravityScale;
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Saw")
+        {
+            logic.isDead = true;
+            logic.gameOver();
+            gameObject.SetActive(false);
+        }
+    }
+
     private void OnEnable()
     {
         controls.Enable();

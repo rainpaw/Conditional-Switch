@@ -14,25 +14,37 @@ public class PipeSpawnScript : MonoBehaviour
 
     public float heightOffset = 5f;
 
+    public LogicSystemScript logic;
+
+    private void Start()
+    {
+        logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicSystemScript>();
+    }
+
     private void Update()
     {
-        transform.position = new Vector3(transform.position.x, Random.Range(heightOffset, 0 - heightOffset), transform.position.z);
-
-        spawnRate = Random.Range(1.0f, 8.0f);
-
-        if (timer < spawnRate)
+        if (logic.isDead == false)
         {
-            timer += Time.deltaTime;
-        }
-        else
-        {
-            if (Random.Range(1, 10) == 1) {
-                Instantiate(questionMarkBlock, transform.position, transform.rotation);
-            } else
+            transform.position = new Vector3(transform.position.x, Random.Range(heightOffset, 0 - heightOffset), transform.position.z);
+
+            spawnRate = Random.Range(1.0f, 8.0f);
+
+            if (timer < spawnRate)
             {
-                Instantiate(saw, transform.position, transform.rotation);
+                timer += Time.deltaTime;
             }
-            timer = 0;
+            else
+            {
+                if (Random.Range(1, 20) == 1)
+                {
+                    Instantiate(questionMarkBlock, transform.position, transform.rotation);
+                }
+                else
+                {
+                    Instantiate(saw, transform.position, transform.rotation);
+                }
+                timer = 0;
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class LogicSystemScript : MonoBehaviour
 {
-    bool isDead = false;
+    public bool isDead = false;
     public int playerScore;
     public TextMeshProUGUI scoreText;
 
@@ -16,6 +16,8 @@ public class LogicSystemScript : MonoBehaviour
     private string stringTimerRounded;
     public TextMeshProUGUI timerText;
 
+    public DeathParticlesScript deathParticles;
+
     [ContextMenu("Increase Score")]
     public void addScore()
     {
@@ -23,19 +25,27 @@ public class LogicSystemScript : MonoBehaviour
         scoreText.text = playerScore.ToString();
     }
 
+    public void gameOver()
+    {
+        deathParticles.runParticles();
+    }
+
     public void Update()
     {
-        timer += Time.deltaTime;
-        timerRounded = Math.Round(timer * 10.0) * 0.1;
-        stringTimerRounded = timerRounded.ToString();
+        if (isDead == false)
+        {
+            timer += Time.deltaTime;
+            timerRounded = Math.Round(timer * 10.0) * 0.1;
+            stringTimerRounded = timerRounded.ToString();
 
-        if (!stringTimerRounded.Contains("."))
-        {
-            timerText.text = stringTimerRounded + ".0";
-        }
-        else
-        {
-            timerText.text = stringTimerRounded;
+            if (!stringTimerRounded.Contains("."))
+            {
+                timerText.text = stringTimerRounded + ".0";
+            }
+            else
+            {
+                timerText.text = stringTimerRounded;
+            }
         }
     }
 }

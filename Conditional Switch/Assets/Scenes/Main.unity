@@ -294,8 +294,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 909.5, y: -114.899994}
-  m_SizeDelta: {x: 1766.2, y: 229.79999}
+  m_AnchoredPosition: {x: 508.33154, y: -114.899994}
+  m_SizeDelta: {x: 963.863, y: 229.8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &587987687
 MonoBehaviour:
@@ -687,6 +687,7 @@ MonoBehaviour:
   questionMarkBlock: {fileID: 306836857921913860, guid: 57f7e1f000794ea459842c7eb37c2be4, type: 3}
   spawnRate: 2
   heightOffset: 5
+  logic: {fileID: 0}
 --- !u!1 &1573073527
 GameObject:
   m_ObjectHideFlags: 0
@@ -716,9 +717,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df02775716bdba446b78338bacef77e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDead: 0
   playerScore: 0
   scoreText: {fileID: 1943307585}
   timerText: {fileID: 587987687}
+  deathParticles: {fileID: 2029233312}
 --- !u!4 &1573073529
 Transform:
   m_ObjectHideFlags: 0
@@ -768,8 +771,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -874, y: -103.20001}
-  m_SizeDelta: {x: 1693.8, y: 206.40002}
+  m_AnchoredPosition: {x: -581, y: -104.564575}
+  m_SizeDelta: {x: 1110.05, y: 209.1291}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1943307585
 MonoBehaviour:
@@ -1710,7 +1713,7 @@ ParticleSystem:
     gravityModifier:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 2
       minScalar: 0
       maxCurve:
         serializedVersion: 2
@@ -5940,6 +5943,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a8543d047b2a9c468261f28b661d170, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 1205390619}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
