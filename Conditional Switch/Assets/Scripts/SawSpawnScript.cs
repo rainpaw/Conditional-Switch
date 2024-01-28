@@ -12,7 +12,7 @@ public class PipeSpawnScript : MonoBehaviour
     public float spawnRate = 2f;
     private float timer = 0f;
 
-    public float heightOffset = 5f;
+    public float heightOffset = 4f;
 
     public LogicSystemScript logic;
 
@@ -35,7 +35,7 @@ public class PipeSpawnScript : MonoBehaviour
             }
             else
             {
-                if (Random.Range(1, 20) == 1)
+                if (Random.Range(1, 18) == 1)
                 {
                     Instantiate(questionMarkBlock, transform.position, transform.rotation);
                 }

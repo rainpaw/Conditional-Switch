@@ -29,11 +29,14 @@ public class PlayerMoveScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Saw")
+        if (collision.gameObject.tag == "Saw" | collision.gameObject.tag == "Boundary")
         {
             logic.isDead = true;
             logic.gameOver();
             gameObject.SetActive(false);
+        } else if (collision.gameObject.tag == "QuestionMarkBlock")
+        {
+
         }
     }
 

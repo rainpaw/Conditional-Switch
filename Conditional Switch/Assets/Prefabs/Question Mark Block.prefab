@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 8745239410901300779}
   m_Layer: 0
   m_Name: Question Mark Block
-  m_TagString: Untagged
+  m_TagString: QuestionMarkBlock
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -153,3 +153,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 4
   rotationSpeed: 200
+  logic: {fileID: 0}

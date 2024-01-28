@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LogicSystemScript : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class LogicSystemScript : MonoBehaviour
 
     public DeathParticlesScript deathParticles;
 
+    public GameObject gameOverScreen;
+
     [ContextMenu("Increase Score")]
     public void addScore()
     {
@@ -28,6 +31,17 @@ public class LogicSystemScript : MonoBehaviour
     public void gameOver()
     {
         deathParticles.runParticles();
+        gameOverScreen.SetActive(true);
+    }
+
+    public void resetGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void quitGame()
+    {
+        Application.Quit();
     }
 
     public void Update()
