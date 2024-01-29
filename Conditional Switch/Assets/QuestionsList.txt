@@ -1,0 +1,12 @@
+# List of Base Questions to ask the player
+# Created by rainpaw
+#
+["Is the original conditional statement true?"]
+["Is the inverse of the original conditional statement true?"]
+["Is the converse of the original conditional statement true?"]
+["Is the contrapositive of the original conditional statement true?"]
+["Is the biconditional of the original conditional statement true?"]
+["What is the inverse of the original conditional statement?"]
+["What is the converse of the original conditional statement?"]
+["What is the contrapositive of the original conditional statement?"]
+["What is the biconditional of the original conditional statement?"]

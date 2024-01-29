@@ -1,4 +1,4 @@
-# List of Questions
+# List of Conditional Statements
 # Created by rainpaw
 #
 # Format: ["True Conditional Statement"|"Inverse"|"Converse"|"Contrapositive"|"Biconditional"]=["Reason for Original"|"Reason for Inverse"|"Reason for Converse"|"Reason for Contrapositive"|"Reason for Biconditional"]
