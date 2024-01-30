@@ -36,7 +36,7 @@ public class PlayerMoveScript : MonoBehaviour
             gameObject.SetActive(false);
         } else if (collision.gameObject.tag == "QuestionMarkBlock")
         {
-
+            logic.askQuestion();
         }
     }
 

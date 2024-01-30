@@ -1,0 +1,28 @@
+# List of Conditional Statements
+# Created by rainpaw
+#
+# Format: ["True Conditional Statement"|"Inverse"|"Converse"|"Contrapositive"|"Biconditional"]=["Reason for Original"|"Reason for Inverse"|"Reason for Converse"|"Reason for Contrapositive"|"Reason for Biconditional"]
+#
+# >original: if p is true then q is true
+# ~inverse: if p is not true then q is not true
+# +converse: if q is true then p is true
+# -contrapositive: if q is not true then p is not true
+# /biconditional: p is true if and only if q is true
+#
+# I don't think that this one is actually usable because the first statement is not necessarily true.
+#=["If you give a mouse a cookie, he's going to ask for a glass of milk."|"If you don't give a mouse a cookie, he's not going to ask for a glass of milk."|"If a mouse asks for a glass of milk, you're going to give him a cookie."|"If a mouse doesn't ask for a glass of milk, you're not going to give him a cookie"|"You're going to give a mouse a cookie if and only if he asks for a glass of milk."]
+#>["The original conditional statement is true because"|"Reason for Inverse"|"Reason for Converse"|"Reason for Contrapositive"|"Reason for Biconditional"]
+#
+=1["If a triangle has a 90 degree angle then it is a right triangle."|"If a triangle does not have a 90 degree angle then it is not a right triangle."|"If a triangle is a right triangle then it has a 90 degree angle."|"If a triangle is not a right triangle then it does not have a 90 degree angle."|"A triangle has a 90 degree angle if and only if it is a right triangle."]
+>1["The original conditional statement is true because a triangle that has a 90 degree angle must be a right triangle. A right triangle has an angle that is made up of two lines that are perpendicular, and this is the definition of a 90 degree angle."]
+~1["The inverse of the original conditional statement is true because any triangle that has a 90 degree angle is a right triangle by definition. Therefore, a triangle without a 90 degree angle must not be a right triangle."]
++1["The converse of the original conditional statement is true because a right triangle must have a 90 degree angle as one of its angles. This is the definition of a right triangle."]
+-1["The contrapositive of the original conditional statement is true because unless a triangle is a right triangle, it cannot have a 90 degree angle. A right triangle is a triangle with a 90 degree angle, so any triangle that does not have that 90 degree angle cannot be a right triangle."]
+/1["The biconditional of the original conditional statement is true because a triangle can only 90 degree angle if it is a right triangle. Any other type of triangle cannot have a 90 degree angle in it, because then it would be a right triangle."]
+#
+=2["If you have a cast then you are injured."|"If you do not have a cast then you are not injured."|"If you are injured then you have a cast."|"If you are not injured then you do not have a cast."|"You have a cast if and only if you are injured."]
+>2["The original conditional statement is true because a cast is only given to a person who has a broken or fractured bone, meaning that they are injured."]
+~2["The inverse of the original conditional statement is false because you can be injured and have a mild injury that does not require a cast."]
++2["The converse of the original conditional statement is false because mild injuries do not require a cast, so you can have an injury and not have a cast."]
+-2["The contrapositive of the original conditional statement is true because if you are not injured there is no situation in which you would be given a cast. Casts are only given to people who have a broken or fractured bone, and that is an injury."]
+/2["The biconditional of the original conditional statement is true because the only situation in which you would have a cast would be if you are injured."]
