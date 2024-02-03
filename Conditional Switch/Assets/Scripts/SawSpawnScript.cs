@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class PipeSpawnScript : MonoBehaviour
@@ -35,7 +30,7 @@ public class PipeSpawnScript : MonoBehaviour
             }
             else
             {
-                if (Random.Range(1, 18) == 1)
+                if (Random.Range(1, 16) == 1)
                 {
                     Instantiate(questionMarkBlock, transform.position, transform.rotation);
                 }

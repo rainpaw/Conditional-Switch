@@ -12,7 +12,7 @@ public class SawMovementScript : MonoBehaviour
 
     private void Start()
     {
-        moveSpeed = Random.Range(1, 14);
+        moveSpeed = Random.Range(1, 12);
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicSystemScript>();
     }
 
