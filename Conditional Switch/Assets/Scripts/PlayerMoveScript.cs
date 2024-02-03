@@ -20,7 +20,10 @@ public class PlayerMoveScript : MonoBehaviour
 
     private void Switch()
     {
-        rb.gravityScale = 0 - rb.gravityScale;
+        if (!logic.isPaused)
+        {
+            rb.gravityScale = 0 - rb.gravityScale;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

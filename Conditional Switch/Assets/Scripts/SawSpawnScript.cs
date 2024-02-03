@@ -4,7 +4,7 @@ public class PipeSpawnScript : MonoBehaviour
 {
     public GameObject saw;
     public GameObject questionMarkBlock;
-    public float spawnRate = 2f;
+    public float spawnRate = 3f;
     private float timer = 0f;
 
     public float heightOffset = 4f;
@@ -18,11 +18,11 @@ public class PipeSpawnScript : MonoBehaviour
 
     private void Update()
     {
-        if (logic.isDead == false)
+        if (logic.isDead == false & logic.isPaused == false)
         {
             transform.position = new Vector3(transform.position.x, Random.Range(heightOffset, 0 - heightOffset), transform.position.z);
 
-            spawnRate = Random.Range(1.0f, 8.0f);
+            spawnRate = Random.Range(2.0f, 6.0f);
 
             if (timer < spawnRate)
             {
@@ -30,7 +30,7 @@ public class PipeSpawnScript : MonoBehaviour
             }
             else
             {
-                if (Random.Range(1, 16) == 1)
+                if (Random.Range(1, 8) == 1)
                 {
                     Instantiate(questionMarkBlock, transform.position, transform.rotation);
                 }

@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class QuestionMarkBlockScript : MonoBehaviour
 {
-    public float moveSpeed = 4f;
+    public float moveSpeed = 5f;
     public float rotationSpeed = 200f;
 
     public LogicSystemScript logic;
@@ -16,7 +14,7 @@ public class QuestionMarkBlockScript : MonoBehaviour
 
     private void Update()
     {
-        if (logic.isDead == false)
+        if (logic.isDead == false & logic.isPaused == false)
         {
             transform.position += (Vector3.left * moveSpeed) * Time.deltaTime;
             transform.Rotate(new Vector3(transform.rotation.x, transform.rotation.y, (1 * rotationSpeed) * Time.deltaTime));
