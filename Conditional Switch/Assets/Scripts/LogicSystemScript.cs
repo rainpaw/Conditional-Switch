@@ -9,8 +9,16 @@ using System.Globalization;
 
 public class LogicSystemScript : MonoBehaviour
 {
-    public GameObject player;
-    public Rigidbody2D playerRigidbody;
+    private GameObject player;
+    private Rigidbody2D playerRigidbody;
+    private Vector3 previousVelocity;
+
+    public GameObject option1Button;
+    public GameObject option2Button;
+    public GameObject option3Button;
+    public GameObject option4Button;
+
+    private GameObject correctButton;
 
     public bool isDead = false;
     public bool isPaused = false;
@@ -29,9 +37,16 @@ public class LogicSystemScript : MonoBehaviour
     public TextMeshProUGUI statementTextInGame;
     public TextMeshProUGUI questionText;
     public TextMeshProUGUI statementTextQuestionView;
+    public TextMeshProUGUI isCorrectText;
+    public TextMeshProUGUI explanationText;
     public TextAsset statementsList;
     public TextAsset questionsList;
+    public TextAsset whatIsExplanationsList;
     public GameObject questionUI;
+    public GameObject continueButton;
+
+    private string questionType; // isTrue or whatIs
+    private string questionStatementType;
 
     private string originalStatement = "[placeholder]";
     Dictionary<int, Dictionary<string, Dictionary<string, string>>> statements = new Dictionary<int, Dictionary<string, Dictionary<string, string>>>();
@@ -39,17 +54,19 @@ public class LogicSystemScript : MonoBehaviour
     int statementIndex = 0;
     private List<int> usedQuestions = new List<int>();
     List<string> questionsAsList = new List<string>();
+    Dictionary<string, string> whatIsExplanations = new Dictionary<string, string>();
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         playerRigidbody = player.GetComponent<Rigidbody2D>();
 
-        (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>) informationFiles = loadDataFromText();
+        (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>, Dictionary<string, string>) informationFiles = loadDataFromText();
 
         statements = informationFiles.Item1;
         questions = informationFiles.Item2;
         questionsAsList = informationFiles.Item3;
+        whatIsExplanations = informationFiles.Item4;
 
         // Get original statement and DO NOT set to in-game text
         statementIndex = Random.Range(1, statements.Keys.Count+1); // Indexes by 1 instead of 0, the way it is in the dict
@@ -78,6 +95,7 @@ public class LogicSystemScript : MonoBehaviour
     {
         isPaused = true;
         playerRigidbody.gravityScale = 0;
+        previousVelocity = playerRigidbody.velocity;
         playerRigidbody.velocity = Vector3.zero;
     }
     public void resumeGame(bool afterQuestion)
@@ -85,12 +103,15 @@ public class LogicSystemScript : MonoBehaviour
         if (afterQuestion == true)
         {
             player.transform.position = Vector3.zero;
+            playerRigidbody.velocity = Vector3.zero;
+            questionUI.SetActive(false);
         } else
         {
             player.transform.position = new Vector3(0, transform.position.y, 0);
+            playerRigidbody.velocity = previousVelocity;
         }
+        playerRigidbody.gravityScale = 3;
         isPaused = false;
-        Debug.Log("RESUME");
     }
     public void quitGame()
     {
@@ -111,17 +132,14 @@ public class LogicSystemScript : MonoBehaviour
 
             questionText.text = questionsAsList[questionNumber];
 
-
-            string questionType = ""; // isTrue or whatIs
-            string questionStatementType = ""; // original, inverse, etc (the statement that the question uses/needs
             foreach (KeyValuePair<string, Dictionary<string, string>> questionItem in questions) // Loops through isTrue and whatIs in dictionary
             {
                 foreach (KeyValuePair<string, string> subQuestionItem in questionItem.Value) // Loops through questions in that subthing
                 {
                     if (questionsAsList[questionNumber] == subQuestionItem.Value)
                     {
-                        questionType = questionItem.Key;
-                        questionStatementType = subQuestionItem.Key;
+                        questionType = questionItem.Key; // isTrue or whatIs
+                        questionStatementType = subQuestionItem.Key; // original, inverse, etc (the statement that the question uses/needs
                     }
                 }
             }
@@ -130,25 +148,137 @@ public class LogicSystemScript : MonoBehaviour
             {
                 TextInfo cultInfo = new CultureInfo("en-US", false).TextInfo;
                 statementTextQuestionView.text = cultInfo.ToTitleCase(questionStatementType) + ": " + statements[statementIndex]["statements"][questionStatementType];
-            } else
+            }
+            else
             {
                 statementTextQuestionView.text = "Original: " + statements[statementIndex]["statements"]["original"];
             }
+
+            // Set options
+            TextMeshProUGUI option1Text = option1Button.GetComponentInChildren<TextMeshProUGUI>();
+            TextMeshProUGUI option2Text = option2Button.GetComponentInChildren<TextMeshProUGUI>();
+            TextMeshProUGUI option3Text = option3Button.GetComponentInChildren<TextMeshProUGUI>();
+            TextMeshProUGUI option4Text = option4Button.GetComponentInChildren<TextMeshProUGUI>();
+
+            option1Button.SetActive(true);
+            option2Button.SetActive(true);
+            option3Button.SetActive(true);
+            option4Button.SetActive(true);
+
+            if (questionType == "isTrue")
+            {
+                option1Text.text = "True";
+                option2Text.text = "False";
+                option3Button.SetActive(false);
+                option4Button.SetActive(false);
+
+                if (statements[statementIndex]["truth"][questionStatementType] == "T")
+                {
+                    correctButton = option1Button;
+                }
+                else
+                {
+                    correctButton = option2Button;
+                }
+            }
+            else
+            {
+                // Set buttons
+
+                List<string> randomOptions = new List<string> { "original", "inverse", "converse", "contrapositive", "biconditional" };
+                string optionToUse;
+
+                optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
+                option1Text.text = statements[statementIndex]["statements"][optionToUse];
+                randomOptions.Remove(optionToUse);
+
+                optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
+                option2Text.text = statements[statementIndex]["statements"][optionToUse];
+                randomOptions.Remove(optionToUse);
+
+                optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
+                option3Text.text = statements[statementIndex]["statements"][optionToUse];
+                randomOptions.Remove(optionToUse);
+
+                optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
+                option4Text.text = statements[statementIndex]["statements"][optionToUse];
+                randomOptions.Remove(optionToUse);
+
+                if (randomOptions.Contains(questionStatementType)) // Checks if correct answer is the one left behind
+                {
+                    List<TextMeshProUGUI> optionButtons = new List<TextMeshProUGUI> { option1Text, option2Text, option3Text, option4Text };
+
+                    optionButtons[Random.Range(0, optionButtons.Count)].text = statements[statementIndex]["statements"][questionStatementType]; // Adds correct answer to button group
+                }
+
+                // Determine which is the correct button
+                List<TextMeshProUGUI> optionTexts = new List<TextMeshProUGUI> { option1Text, option2Text, option3Text, option4Text };
+
+                for (int i = 0; i < optionTexts.Count; i++) // Loops through optionTexts, to get value, use optionTexts[i]
+                {
+                    if (optionTexts[i].text == statements[statementIndex]["statements"][questionStatementType])
+                    {
+                        correctButton = optionTexts[i].gameObject.transform.parent.gameObject;
+                    }
+                }
+            }
+            questionText.gameObject.SetActive(true);
+            statementTextQuestionView.gameObject.SetActive(true);
+
+            isCorrectText.gameObject.SetActive(false);
+            explanationText.gameObject.SetActive(false);
+            continueButton.SetActive(false);
 
             questionUI.SetActive(true);
             pauseGame();
         } else
         {
-            throw new Exception("Hey! You hit all of the questions!");
+            throw new Exception("Hey! You hit all of the questions!"); // CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE
         }
     }
 
-    public (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>) loadDataFromText()
+    public void onQuestionButtonClick(GameObject button)
+    {
+        option1Button.SetActive(false);
+        option2Button.SetActive(false);
+        option3Button.SetActive(false);
+        option4Button.SetActive(false);
+
+        questionText.gameObject.SetActive(false);
+        statementTextQuestionView.gameObject.SetActive(false);
+
+        isCorrectText.gameObject.SetActive(true);
+        explanationText.gameObject.SetActive(true);
+        continueButton.SetActive(true);
+
+        if (button == correctButton)
+        {
+            isCorrectText.text = "Correct!";
+            playerScore += 1;
+            scoreText.text = playerScore.ToString();
+        }
+        else
+        {
+            isCorrectText.text = "Wrong";
+        }
+
+        if (questionType == "isTrue")
+        {
+            explanationText.text = "Explanation: " + statements[statementIndex]["reasons"][questionStatementType];
+        }
+        else
+        {
+            explanationText.text = "Explanation: " + whatIsExplanations[questionStatementType];
+        }
+    }
+
+    public (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>, Dictionary<string, string>) loadDataFromText()
     {
         string statementsTextWithComments = statementsList.text;
         string questionsTextWithComments = questionsList.text;
+        string whatIsExplanationsTextWithComments = whatIsExplanationsList.text;
 
-        List<string> textFiles = new List<string> { statementsTextWithComments, questionsTextWithComments }; // Two text files as strings with \n separator
+        List<string> textFiles = new List<string> { statementsTextWithComments, questionsTextWithComments, whatIsExplanationsTextWithComments}; // Two text files as strings with \n separator
         List<List<string>> textFilesEdited = editTextFiles(textFiles);
 
         // Statement-specific
@@ -173,7 +303,7 @@ public class LogicSystemScript : MonoBehaviour
         List<string> questionsListOriginal = textFilesEdited[1];
         Dictionary<string, string> isTrueQuestions = new Dictionary<string, string>();
         Dictionary<string, string> whatIsQuestions = new Dictionary<string, string>();
-        Dictionary<string, Dictionary<string, string>> questions = new Dictionary<string, Dictionary<string, string>>();
+        Dictionary<string, Dictionary<string, string>> questions = new Dictionary<string, Dictionary<string, string>>(); // isTrue/whatIs = first dict key, original, inverse, etc = sub dict key, question = sub dict value
 
         for (int i = 0; i < questionsListOriginal.Count; i++) // Loops through lines in questions list
         {
@@ -240,7 +370,30 @@ public class LogicSystemScript : MonoBehaviour
             questionsListToReturn.Add(questionsListOriginal[j].Substring(1));
         }
 
-        return (statements, questions, questionsListToReturn);
+        // What is explanations-specific
+        List<string> whatIsOriginal = textFilesEdited[2];
+        Dictionary<string, string> whatIsExplanations = new Dictionary<string, string>();
+
+        for (int k = 0; k < whatIsOriginal.Count; k++) // Loops through whatIsOriginal lines, to get value, use whatIsOriginal[k]
+        {
+            switch (whatIsOriginal[k][0])
+            {
+                case '~':
+                    whatIsExplanations.Add("inverse", whatIsOriginal[k].Substring(1));
+                    break;
+                case '+':
+                    whatIsExplanations.Add("converse", whatIsOriginal[k].Substring(1));
+                    break;
+                case '-':
+                    whatIsExplanations.Add("contrapositive", whatIsOriginal[k].Substring(1));
+                    break;
+                case '/':
+                    whatIsExplanations.Add("biconditional", whatIsOriginal[k].Substring(1));
+                    break;
+            }
+        }
+
+        return (statements, questions, questionsListToReturn, whatIsExplanations);
     }
 
     // Helper methods for loadDataFromText
@@ -275,6 +428,7 @@ public class LogicSystemScript : MonoBehaviour
     {
         List<string> statementsEdited = new List<string>();
         List<string> questionsEdited = new List<string>();
+        List<string> whatIsEdited = new List<string>();
 
         for (int i = 0; i < textFiles.Count; i++) // Loops through textFiles, to get value, use textFiles[i]
         {
@@ -289,10 +443,13 @@ public class LogicSystemScript : MonoBehaviour
                 case 1:
                     questionsEdited = linesListNoComments;
                     break;
+                case 2:
+                    whatIsEdited = linesListNoComments;
+                    break;
             }
         }
 
-        List<List<string>> textFilesEdited = new List<List<string>> { statementsEdited, questionsEdited };
+        List<List<string>> textFilesEdited = new List<List<string>> { statementsEdited, questionsEdited, whatIsEdited};
         return textFilesEdited;
     }
     private Dictionary<int, List<string>> createNumberLists(List<string> textFile, int numberOfNums)
@@ -470,7 +627,7 @@ public class LogicSystemScript : MonoBehaviour
 
     public void Update()
     {
-        if (isDead == false)
+        if (isDead == false & isPaused == false)
         {
             timer += Time.deltaTime;
             timerRounded = Math.Round(timer * 10.0) * 0.1;

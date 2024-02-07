@@ -1,0 +1,7 @@
+# "What is" question explanations
+# Created by rainpaw
+#
+~The inverse of a conditional statement is ~p -> ~q, or "If not p then not q."
++The converse of a conditional statement is q -> p, or "If q then p."
+-The contrapositive of a conditional statement is ~q -> ~p, or "If not q then not p."
+/The biconditional of a conditional statement is p <-> q, or "p if and only if q."
