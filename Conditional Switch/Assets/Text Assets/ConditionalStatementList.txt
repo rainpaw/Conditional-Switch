@@ -14,7 +14,7 @@
 #>["The original conditional statement is true because"|"Reason for Inverse"|"Reason for Converse"|"Reason for Contrapositive"|"Reason for Biconditional"]
 #
 # THE NEXT LINE is the number of conditional statement sections that there are.
-|2
+|3
 #
 1="If a triangle has a 90 degree angle then it is a right triangle."|"If a triangle does not have a 90 degree angle then it is not a right triangle."|"If a triangle is a right triangle then it has a 90 degree angle."|"If a triangle is not a right triangle then it does not have a 90 degree angle."|"A triangle has a 90 degree angle if and only if it is a right triangle."|
 1>T"The original conditional statement is true because a triangle that has a 90 degree angle must be a right triangle. A right triangle has an angle that is made up of two lines that are perpendicular, and this is the definition of a 90 degree angle."

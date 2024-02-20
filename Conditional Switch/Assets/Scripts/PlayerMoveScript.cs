@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class PlayerMoveScript : MonoBehaviour
@@ -6,6 +7,8 @@ public class PlayerMoveScript : MonoBehaviour
     public Rigidbody2D rb;
 
     public LogicSystemScript logic;
+
+    public float gravityScale = 3f;
 
     private void Awake()
     {
@@ -16,11 +19,12 @@ public class PlayerMoveScript : MonoBehaviour
     private void Start()
     {
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicSystemScript>();
+        transform.position = new Vector3(-3, 2, 0);
     }
 
     private void Switch()
     {
-        if (!logic.isPaused)
+        if (!logic.isPaused & logic.gameHasStarted)
         {
             rb.gravityScale = 0 - rb.gravityScale;
         }
@@ -36,7 +40,9 @@ public class PlayerMoveScript : MonoBehaviour
         } else if (collision.gameObject.tag == "QuestionMarkBlock")
         {
             logic.askQuestion();
-            Destroy(collision.gameObject);
+        } else if (collision.gameObject.tag == "AdvancedQuestionMarkBlock")
+        {
+            logic.askQuestion();
         }
     }
 

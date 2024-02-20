@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using Random = UnityEngine.Random;
 using System.Globalization;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class LogicSystemScript : MonoBehaviour
 {
@@ -13,11 +14,15 @@ public class LogicSystemScript : MonoBehaviour
     private Rigidbody2D playerRigidbody;
     private Vector3 previousVelocity;
 
+    public TextMeshProUGUI countdownText;
+    public bool gameHasStarted = false;
+    private bool displayCountdown = true;
+    private double countdownTimer;
+
     public GameObject option1Button;
     public GameObject option2Button;
     public GameObject option3Button;
     public GameObject option4Button;
-
     private GameObject correctButton;
 
     public bool isDead = false;
@@ -40,6 +45,7 @@ public class LogicSystemScript : MonoBehaviour
     public TextMeshProUGUI isCorrectText;
     public TextMeshProUGUI explanationText;
     public TextAsset statementsList;
+    public TextAsset advancedStatementsList;
     public TextAsset questionsList;
     public TextAsset whatIsExplanationsList;
     public GameObject questionUI;
@@ -72,6 +78,10 @@ public class LogicSystemScript : MonoBehaviour
         statementIndex = Random.Range(1, statements.Keys.Count+1); // Indexes by 1 instead of 0, the way it is in the dict
         originalStatement = statements[statementIndex]["statements"]["original"];
         //statementTextInGame.text = originalStatement;
+
+        gameHasStarted = false;
+        displayCountdown = true;
+        countdownText.text = "3";
     }
 
     [ContextMenu("Increase Score")]
@@ -94,6 +104,7 @@ public class LogicSystemScript : MonoBehaviour
     public void pauseGame()
     {
         isPaused = true;
+        gameHasStarted = false;
         playerRigidbody.gravityScale = 0;
         previousVelocity = playerRigidbody.velocity;
         playerRigidbody.velocity = Vector3.zero;
@@ -102,16 +113,28 @@ public class LogicSystemScript : MonoBehaviour
     {
         if (afterQuestion == true)
         {
-            player.transform.position = Vector3.zero;
+            player.transform.position = new Vector3(-3, 2, 0);
             playerRigidbody.velocity = Vector3.zero;
+
+            GameObject[] saws = GameObject.FindGameObjectsWithTag("Saw");
+            GameObject[] questions = GameObject.FindGameObjectsWithTag("QuestionMarkBlock");
+            GameObject[] advancedQuestions = GameObject.FindGameObjectsWithTag("AdvancedQuestionMarkBlock");
+            GameObject[] objectsToDestroy = saws.Concat(questions).Concat(advancedQuestions).ToArray();
+            foreach (GameObject obj in objectsToDestroy)
+            {
+                Destroy(obj);
+            }
+
             questionUI.SetActive(false);
         } else
         {
-            player.transform.position = new Vector3(0, transform.position.y, 0);
+            player.transform.position = new Vector3(-3, transform.position.y, 0);
             playerRigidbody.velocity = previousVelocity;
         }
-        playerRigidbody.gravityScale = 3;
         isPaused = false;
+        gameHasStarted = false;
+        displayCountdown = true;
+        countdownTimer = 0;
     }
     public void quitGame()
     {
@@ -122,119 +145,126 @@ public class LogicSystemScript : MonoBehaviour
     {
         int questionNumber = Random.Range(0, questionsAsList.Count);
 
-        if (!(usedQuestions.Count >= questionsAsList.Count))
+        if (usedQuestions.Count >= questionsAsList.Count)
         {
-            while (usedQuestions.Contains(questionNumber))
-            {
-                questionNumber = Random.Range(0, questionsAsList.Count);
-            }
-            usedQuestions.Add(questionNumber);
+            List<int> usableIndices = statements.Keys.ToList();
+            Debug.Log("GotToLine1");
+            usableIndices.Remove(statementIndex); // Remove the current statement index from the list (so you don't get the same statement twice)
+            Debug.Log("GotToLine2");
+            statementIndex = Random.Range(1, usableIndices.Count + 1); // Indexes by 1 instead of 0, the way it is in the dict
+            Debug.Log("GotToLine3");
 
-            questionText.text = questionsAsList[questionNumber];
+            originalStatement = statements[statementIndex]["statements"]["original"];
+            //statementTextInGame.text = originalStatement;
+            Debug.Log("GotToFinish");
 
-            foreach (KeyValuePair<string, Dictionary<string, string>> questionItem in questions) // Loops through isTrue and whatIs in dictionary
-            {
-                foreach (KeyValuePair<string, string> subQuestionItem in questionItem.Value) // Loops through questions in that subthing
-                {
-                    if (questionsAsList[questionNumber] == subQuestionItem.Value)
-                    {
-                        questionType = questionItem.Key; // isTrue or whatIs
-                        questionStatementType = subQuestionItem.Key; // original, inverse, etc (the statement that the question uses/needs
-                    }
-                }
-            }
-
-            if (questionType == "isTrue")
-            {
-                TextInfo cultInfo = new CultureInfo("en-US", false).TextInfo;
-                statementTextQuestionView.text = cultInfo.ToTitleCase(questionStatementType) + ": " + statements[statementIndex]["statements"][questionStatementType];
-            }
-            else
-            {
-                statementTextQuestionView.text = "Original: " + statements[statementIndex]["statements"]["original"];
-            }
-
-            // Set options
-            TextMeshProUGUI option1Text = option1Button.GetComponentInChildren<TextMeshProUGUI>();
-            TextMeshProUGUI option2Text = option2Button.GetComponentInChildren<TextMeshProUGUI>();
-            TextMeshProUGUI option3Text = option3Button.GetComponentInChildren<TextMeshProUGUI>();
-            TextMeshProUGUI option4Text = option4Button.GetComponentInChildren<TextMeshProUGUI>();
-
-            option1Button.SetActive(true);
-            option2Button.SetActive(true);
-            option3Button.SetActive(true);
-            option4Button.SetActive(true);
-
-            if (questionType == "isTrue")
-            {
-                option1Text.text = "True";
-                option2Text.text = "False";
-                option3Button.SetActive(false);
-                option4Button.SetActive(false);
-
-                if (statements[statementIndex]["truth"][questionStatementType] == "T")
-                {
-                    correctButton = option1Button;
-                }
-                else
-                {
-                    correctButton = option2Button;
-                }
-            }
-            else
-            {
-                // Set buttons
-
-                List<string> randomOptions = new List<string> { "original", "inverse", "converse", "contrapositive", "biconditional" };
-                string optionToUse;
-
-                optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
-                option1Text.text = statements[statementIndex]["statements"][optionToUse];
-                randomOptions.Remove(optionToUse);
-
-                optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
-                option2Text.text = statements[statementIndex]["statements"][optionToUse];
-                randomOptions.Remove(optionToUse);
-
-                optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
-                option3Text.text = statements[statementIndex]["statements"][optionToUse];
-                randomOptions.Remove(optionToUse);
-
-                optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
-                option4Text.text = statements[statementIndex]["statements"][optionToUse];
-                randomOptions.Remove(optionToUse);
-
-                if (randomOptions.Contains(questionStatementType)) // Checks if correct answer is the one left behind
-                {
-                    List<TextMeshProUGUI> optionButtons = new List<TextMeshProUGUI> { option1Text, option2Text, option3Text, option4Text };
-
-                    optionButtons[Random.Range(0, optionButtons.Count)].text = statements[statementIndex]["statements"][questionStatementType]; // Adds correct answer to button group
-                }
-
-                // Determine which is the correct button
-                List<TextMeshProUGUI> optionTexts = new List<TextMeshProUGUI> { option1Text, option2Text, option3Text, option4Text };
-
-                for (int i = 0; i < optionTexts.Count; i++) // Loops through optionTexts, to get value, use optionTexts[i]
-                {
-                    if (optionTexts[i].text == statements[statementIndex]["statements"][questionStatementType])
-                    {
-                        correctButton = optionTexts[i].gameObject.transform.parent.gameObject;
-                    }
-                }
-            }
-            questionText.gameObject.SetActive(true);
-            statementTextQuestionView.gameObject.SetActive(true);
-
-            isCorrectText.gameObject.SetActive(false);
-            explanationText.gameObject.SetActive(false);
-            continueButton.SetActive(false);
-
-            questionUI.SetActive(true);
-            pauseGame();
-        } else
-        {
-            throw new Exception("Hey! You hit all of the questions!"); // CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE CHANGE
+            usedQuestions.Clear();
         }
+
+        questionNumber = Random.Range(0, questionsAsList.Count);
+        usedQuestions.Add(questionNumber);
+
+        questionText.text = questionsAsList[questionNumber];
+
+        foreach (KeyValuePair<string, Dictionary<string, string>> questionItem in questions) // Loops through isTrue and whatIs in dictionary
+        {
+            foreach (KeyValuePair<string, string> subQuestionItem in questionItem.Value) // Loops through questions in that subthing
+            {
+                if (questionsAsList[questionNumber] == subQuestionItem.Value)
+                {
+                    questionType = questionItem.Key; // isTrue or whatIs
+                    questionStatementType = subQuestionItem.Key; // original, inverse, etc (the statement that the question uses/needs
+                }
+            }
+        }
+
+        if (questionType == "isTrue")
+        {
+            TextInfo cultInfo = new CultureInfo("en-US", false).TextInfo;
+            statementTextQuestionView.text = cultInfo.ToTitleCase(questionStatementType) + ": " + statements[statementIndex]["statements"][questionStatementType];
+        }
+        else
+        {
+            statementTextQuestionView.text = "Original: " + statements[statementIndex]["statements"]["original"];
+        }
+
+        // Set options
+        TextMeshProUGUI option1Text = option1Button.GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI option2Text = option2Button.GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI option3Text = option3Button.GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI option4Text = option4Button.GetComponentInChildren<TextMeshProUGUI>();
+
+        option1Button.SetActive(true);
+        option2Button.SetActive(true);
+        option3Button.SetActive(true);
+        option4Button.SetActive(true);
+
+        if (questionType == "isTrue")
+        {
+            option1Text.text = "True";
+            option2Text.text = "False";
+            option3Button.SetActive(false);
+            option4Button.SetActive(false);
+
+            if (statements[statementIndex]["truth"][questionStatementType] == "T")
+            {
+                correctButton = option1Button;
+            }
+            else
+            {
+                correctButton = option2Button;
+            }
+        }
+        else
+        {
+            // Set buttons
+
+            List<string> randomOptions = new List<string> { "original", "inverse", "converse", "contrapositive", "biconditional" };
+            string optionToUse;
+
+            optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
+            option1Text.text = statements[statementIndex]["statements"][optionToUse];
+            randomOptions.Remove(optionToUse);
+
+            optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
+            option2Text.text = statements[statementIndex]["statements"][optionToUse];
+            randomOptions.Remove(optionToUse);
+
+            optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
+            option3Text.text = statements[statementIndex]["statements"][optionToUse];
+            randomOptions.Remove(optionToUse);
+
+            optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
+            option4Text.text = statements[statementIndex]["statements"][optionToUse];
+            randomOptions.Remove(optionToUse);
+
+            if (randomOptions.Contains(questionStatementType)) // Checks if correct answer is the one left behind
+            {
+                List<TextMeshProUGUI> optionButtons = new List<TextMeshProUGUI> { option1Text, option2Text, option3Text, option4Text };
+
+                optionButtons[Random.Range(0, optionButtons.Count)].text = statements[statementIndex]["statements"][questionStatementType]; // Adds correct answer to button group
+            }
+
+            // Determine which is the correct button
+            List<TextMeshProUGUI> optionTexts = new List<TextMeshProUGUI> { option1Text, option2Text, option3Text, option4Text };
+
+            for (int i = 0; i < optionTexts.Count; i++) // Loops through optionTexts, to get value, use optionTexts[i]
+            {
+                if (optionTexts[i].text == statements[statementIndex]["statements"][questionStatementType])
+                {
+                    correctButton = optionTexts[i].gameObject.transform.parent.gameObject;
+                }
+            }
+        }
+        questionText.gameObject.SetActive(true);
+        statementTextQuestionView.gameObject.SetActive(true);
+
+        isCorrectText.gameObject.SetActive(false);
+        explanationText.gameObject.SetActive(false);
+        continueButton.SetActive(false);
+
+        questionUI.SetActive(true);
+        pauseGame();
     }
 
     public void onQuestionButtonClick(GameObject button)
@@ -272,13 +302,15 @@ public class LogicSystemScript : MonoBehaviour
         }
     }
 
+    [ContextMenu("Load Data")]
     public (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>, Dictionary<string, string>) loadDataFromText()
     {
         string statementsTextWithComments = statementsList.text;
+        string advStatementstextWithComments = advancedStatementsList.text;
         string questionsTextWithComments = questionsList.text;
         string whatIsExplanationsTextWithComments = whatIsExplanationsList.text;
 
-        List<string> textFiles = new List<string> { statementsTextWithComments, questionsTextWithComments, whatIsExplanationsTextWithComments}; // Two text files as strings with \n separator
+        List<string> textFiles = new List<string> { statementsTextWithComments, questionsTextWithComments, whatIsExplanationsTextWithComments, advStatementstextWithComments }; // Two text files as strings with \n separator
         List<List<string>> textFilesEdited = editTextFiles(textFiles);
 
         // Statement-specific
@@ -392,6 +424,22 @@ public class LogicSystemScript : MonoBehaviour
                     break;
             }
         }
+
+        // Advanced statements-specific (very similar to statements)
+        Dictionary<int, Dictionary<string, Dictionary<string, string>>> advancedStatements = new Dictionary<int, Dictionary<string, Dictionary<string, string>>>(); // Int is index, second dict key is reasons/statements/truth, third dict key is ponens/tollens
+
+        List<string> advNumLines = getLinesStartsWith(textFilesEdited[3], "|");
+        int advNumberOfSections = Int32.Parse(advNumLines[0].Substring(1));
+        if (advNumLines.Count > 1)
+        {
+            throw new Exception("There is more than one number line, starting with |, in the AdvConditionalStatementList.");
+        }
+
+        textFilesEdited[4] = removeLinesStartWith(textFilesEdited[3], "|");
+        Dictionary<int, List<string>> advStatementsIndexed = createNumberLists(textFilesEdited[3], advNumberOfSections);
+
+        // At this point you have the dictionary, advStatementsIndexed, with the keys of each conditional statement number.
+        Debug.Log(string.Join(",", advStatementsIndexed.Keys));
 
         return (statements, questions, questionsListToReturn, whatIsExplanations);
     }
@@ -627,19 +675,54 @@ public class LogicSystemScript : MonoBehaviour
 
     public void Update()
     {
-        if (isDead == false & isPaused == false)
+        if (displayCountdown == true)
         {
-            timer += Time.deltaTime;
-            timerRounded = Math.Round(timer * 10.0) * 0.1;
-            stringTimerRounded = timerRounded.ToString();
+            countdownText.gameObject.SetActive(true);
 
-            if (!stringTimerRounded.Contains("."))
+            countdownTimer += Time.deltaTime;
+            if (countdownTimer < 1)
             {
-                timerText.text = stringTimerRounded + ".0";
+                countdownText.text = "3";
             }
-            else
+            else if (countdownTimer > 1 & countdownTimer < 2)
             {
-                timerText.text = stringTimerRounded;
+                countdownText.text = "2";
+            }
+            else if (countdownTimer > 2 & countdownTimer < 3)
+            {
+                countdownText.text = "1";
+            }
+            else if (countdownTimer > 3 & countdownTimer < 3.5)
+            {
+                countdownText.text = "Go!";
+                gameHasStarted = true;
+                if (playerRigidbody.gravityScale == 0)
+                {
+                    playerRigidbody.gravityScale = player.GetComponent<PlayerMoveScript>().gravityScale;
+                }
+            }
+            else if (countdownTimer > 3.5)
+            {
+                countdownText.gameObject.SetActive(false);
+                displayCountdown = false;
+            }
+        }
+        if (gameHasStarted)
+        {
+            if (isDead == false & isPaused == false)
+            {
+                timer += Time.deltaTime;
+                timerRounded = Math.Round(timer * 10.0) * 0.1;
+                stringTimerRounded = timerRounded.ToString();
+
+                if (!stringTimerRounded.Contains("."))
+                {
+                    timerText.text = stringTimerRounded + ".0";
+                }
+                else
+                {
+                    timerText.text = stringTimerRounded;
+                }
             }
         }
     }

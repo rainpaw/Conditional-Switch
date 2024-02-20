@@ -1,0 +1,12 @@
+# List of Advanced Conditional Statements
+# Created by rainpaw
+#
+# < = modus ponens
+# _ = modus tollens
+#
+# THE NEXT LINE is the number of conditional statement sections that there are.
+|1
+#
+1="If a triangle has a 90 degree angle then it is a right triangle.\nA triangle has a 90 degree angle.\nTherefore, it is a right triangle."|"If a triangle has a 90 degree angle then it is a right triangle.\nA triangle is not a right triangle.\nTherefore, it does not have a 90 degree angle."|
+1<T""
+1_T""

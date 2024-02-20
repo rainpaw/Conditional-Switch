@@ -14,7 +14,7 @@ public class QuestionMarkBlockScript : MonoBehaviour
 
     private void Update()
     {
-        if (logic.isDead == false & logic.isPaused == false)
+        if (logic.isDead == false & logic.isPaused == false & logic.gameHasStarted)
         {
             transform.position += (Vector3.left * moveSpeed) * Time.deltaTime;
             transform.Rotate(new Vector3(transform.rotation.x, transform.rotation.y, (1 * rotationSpeed) * Time.deltaTime));

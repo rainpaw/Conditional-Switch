@@ -1,21 +1,21 @@
 using UnityEngine;
 
-public class SawMovementScript : MonoBehaviour
+public class AdvancedQuestionMarkBlockScript : MonoBehaviour
 {
-    private float moveSpeed;
-    public float rotationSpeed = 480f;
+    public float moveSpeed = 5f;
+    public float rotationSpeed = 200f;
 
     public LogicSystemScript logic;
 
     private void Start()
     {
-        moveSpeed = Random.Range(2, 6);
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicSystemScript>();
     }
 
     private void Update()
     {
-        if (logic.isDead == false & logic.isPaused == false & logic.gameHasStarted) {
+        if (logic.isDead == false & logic.isPaused == false & logic.gameHasStarted)
+        {
             transform.position += (Vector3.left * moveSpeed) * Time.deltaTime;
             transform.Rotate(new Vector3(transform.rotation.x, transform.rotation.y, (1 * rotationSpeed) * Time.deltaTime));
 
