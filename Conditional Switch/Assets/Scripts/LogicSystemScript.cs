@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using Random = UnityEngine.Random;
 using System.Globalization;
-using UnityEngine.Experimental.GlobalIllumination;
 
 public class LogicSystemScript : MonoBehaviour
 {
@@ -48,6 +47,7 @@ public class LogicSystemScript : MonoBehaviour
     public TextAsset advancedStatementsList;
     public TextAsset questionsList;
     public TextAsset whatIsExplanationsList;
+    public TextAsset advQuestionsListText;
     public GameObject questionUI;
     public GameObject continueButton;
 
@@ -59,25 +59,32 @@ public class LogicSystemScript : MonoBehaviour
     Dictionary<string, Dictionary<string, string>> questions = new Dictionary<string, Dictionary<string, string>>();
     int statementIndex = 0;
     private List<int> usedQuestions = new List<int>();
+    private List<int> usedAdvQuestions = new List<int>();
     List<string> questionsAsList = new List<string>();
     Dictionary<string, string> whatIsExplanations = new Dictionary<string, string>();
+    Dictionary<int, Dictionary<string, string>> advStatements = new Dictionary<int, Dictionary<string, string>>();
+    Dictionary<string,string> advQuestions = new Dictionary<string, string>();
+    List<string> advQuestionsAsList = new List<string>();
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         playerRigidbody = player.GetComponent<Rigidbody2D>();
 
-        (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>, Dictionary<string, string>) informationFiles = loadDataFromText();
+        (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>, Dictionary<string, string>, Dictionary<int, Dictionary<string, string>>, Dictionary<string, string>, List<string>) informationFiles = loadDataFromText();
 
         statements = informationFiles.Item1;
         questions = informationFiles.Item2;
         questionsAsList = informationFiles.Item3;
         whatIsExplanations = informationFiles.Item4;
+        advStatements = informationFiles.Item5;
+        advQuestions = informationFiles.Item6;
+        advQuestionsAsList = informationFiles.Item7;
 
-        // Get original statement and DO NOT set to in-game text
+        // Get original statement and set to in-game text
         statementIndex = Random.Range(1, statements.Keys.Count+1); // Indexes by 1 instead of 0, the way it is in the dict
         originalStatement = statements[statementIndex]["statements"]["original"];
-        //statementTextInGame.text = originalStatement;
+        statementTextInGame.text = originalStatement;
 
         gameHasStarted = false;
         displayCountdown = true;
@@ -141,51 +148,55 @@ public class LogicSystemScript : MonoBehaviour
         Application.Quit();
     }
 
-    public void askQuestion()
+    public void askQuestion(bool advanced)
     {
-        int questionNumber = Random.Range(0, questionsAsList.Count);
+        int questionNumber;
 
-        if (usedQuestions.Count >= questionsAsList.Count)
+        if (advanced)
         {
-            List<int> usableIndices = statements.Keys.ToList();
-            Debug.Log("GotToLine1");
-            usableIndices.Remove(statementIndex); // Remove the current statement index from the list (so you don't get the same statement twice)
-            Debug.Log("GotToLine2");
-            statementIndex = Random.Range(1, usableIndices.Count + 1); // Indexes by 1 instead of 0, the way it is in the dict
-            Debug.Log("GotToLine3");
+            questionNumber = Random.Range(0, advQuestionsAsList.Count);
+            usedAdvQuestions.Add(questionNumber);
 
-            originalStatement = statements[statementIndex]["statements"]["original"];
-            //statementTextInGame.text = originalStatement;
-            Debug.Log("GotToFinish");
+            questionText.text = advQuestionsAsList[questionNumber];
 
-            usedQuestions.Clear();
-        }
-
-        questionNumber = Random.Range(0, questionsAsList.Count);
-        usedQuestions.Add(questionNumber);
-
-        questionText.text = questionsAsList[questionNumber];
-
-        foreach (KeyValuePair<string, Dictionary<string, string>> questionItem in questions) // Loops through isTrue and whatIs in dictionary
-        {
-            foreach (KeyValuePair<string, string> subQuestionItem in questionItem.Value) // Loops through questions in that subthing
+            foreach (KeyValuePair<string, string> advQuestionItem in advQuestions) // Loops through ponens and tollens in dict
             {
-                if (questionsAsList[questionNumber] == subQuestionItem.Value)
+                if (advQuestionsAsList[questionNumber] == advQuestionItem.Value)
                 {
-                    questionType = questionItem.Key; // isTrue or whatIs
-                    questionStatementType = subQuestionItem.Key; // original, inverse, etc (the statement that the question uses/needs
+                    questionType = null; // there is no question type in the advanced questions
+                    questionStatementType = advQuestionItem.Key; // ponens or tollens (the statement that the question uses/needs
                 }
             }
-        }
 
-        if (questionType == "isTrue")
+            statementTextQuestionView.text = "Original: " + statements[statementIndex]["statements"]["original"]; // show original statement on screen so player can create the modus
+        } else
         {
-            TextInfo cultInfo = new CultureInfo("en-US", false).TextInfo;
-            statementTextQuestionView.text = cultInfo.ToTitleCase(questionStatementType) + ": " + statements[statementIndex]["statements"][questionStatementType];
-        }
-        else
-        {
-            statementTextQuestionView.text = "Original: " + statements[statementIndex]["statements"]["original"];
+            questionNumber = Random.Range(0, questionsAsList.Count);
+            usedQuestions.Add(questionNumber);
+
+            questionText.text = questionsAsList[questionNumber];
+
+            foreach (KeyValuePair<string, Dictionary<string, string>> questionItem in questions) // Loops through isTrue and whatIs in dictionary
+            {
+                foreach (KeyValuePair<string, string> subQuestionItem in questionItem.Value) // Loops through questions in that subthing
+                {
+                    if (questionsAsList[questionNumber] == subQuestionItem.Value)
+                    {
+                        questionType = questionItem.Key; // isTrue or whatIs
+                        questionStatementType = subQuestionItem.Key; // original, inverse, etc (the statement that the question uses/needs
+                    }
+                }
+            }
+
+            if (questionType == "isTrue")
+            {
+                TextInfo cultInfo = new CultureInfo("en-US", false).TextInfo;
+                statementTextQuestionView.text = cultInfo.ToTitleCase(questionStatementType) + ": " + statements[statementIndex]["statements"][questionStatementType];
+            }
+            else
+            {
+                statementTextQuestionView.text = "Original: " + statements[statementIndex]["statements"]["original"];
+            }
         }
 
         // Set options
@@ -199,63 +210,109 @@ public class LogicSystemScript : MonoBehaviour
         option3Button.SetActive(true);
         option4Button.SetActive(true);
 
-        if (questionType == "isTrue")
+        if (advanced)
         {
-            option1Text.text = "True";
-            option2Text.text = "False";
+            List<string> advRandomOptions = new List<string> { "ponens", "tollens" };
+            string advOptionToUse;
+
+            advOptionToUse = advRandomOptions[Random.Range(0, advRandomOptions.Count)];
+            option1Text.text = advStatements[statementIndex][advOptionToUse];
+            advRandomOptions.Remove(advOptionToUse);
+
+            advOptionToUse = advRandomOptions[Random.Range(0, advRandomOptions.Count)];
+            option2Text.text = advStatements[statementIndex][advOptionToUse];
+            advRandomOptions.Remove(advOptionToUse);
+
             option3Button.SetActive(false);
             option4Button.SetActive(false);
 
-            if (statements[statementIndex]["truth"][questionStatementType] == "T")
+            List<TextMeshProUGUI> advOptionTexts = new List<TextMeshProUGUI> { option1Text, option2Text };
+
+            for (int i = 0; i < advOptionTexts.Count; i++) // Loops through advOptionTexts, to get value, use advOptionTexts[i]
             {
-                correctButton = option1Button;
+                if (advOptionTexts[i].text == advStatements[statementIndex][questionStatementType])
+                {
+                    correctButton = advOptionTexts[i].gameObject.transform.parent.gameObject;
+                }
+            }
+        } else
+        {
+            if (questionType == "isTrue")
+            {
+                option1Text.text = "True";
+                option2Text.text = "False";
+                option3Button.SetActive(false);
+                option4Button.SetActive(false);
+
+                if (statements[statementIndex]["truth"][questionStatementType] == "T")
+                {
+                    correctButton = option1Button;
+                }
+                else
+                {
+                    correctButton = option2Button;
+                }
             }
             else
             {
-                correctButton = option2Button;
-            }
-        }
-        else
-        {
-            // Set buttons
+                // Set buttons
 
-            List<string> randomOptions = new List<string> { "original", "inverse", "converse", "contrapositive", "biconditional" };
-            string optionToUse;
+                List<string> randomOptions = new List<string> { "original", "inverse", "converse", "contrapositive", "biconditional" };
+                string optionToUse;
 
-            optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
-            option1Text.text = statements[statementIndex]["statements"][optionToUse];
-            randomOptions.Remove(optionToUse);
+                optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
+                option1Text.text = statements[statementIndex]["statements"][optionToUse];
+                randomOptions.Remove(optionToUse);
 
-            optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
-            option2Text.text = statements[statementIndex]["statements"][optionToUse];
-            randomOptions.Remove(optionToUse);
+                optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
+                option2Text.text = statements[statementIndex]["statements"][optionToUse];
+                randomOptions.Remove(optionToUse);
 
-            optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
-            option3Text.text = statements[statementIndex]["statements"][optionToUse];
-            randomOptions.Remove(optionToUse);
+                optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
+                option3Text.text = statements[statementIndex]["statements"][optionToUse];
+                randomOptions.Remove(optionToUse);
 
-            optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
-            option4Text.text = statements[statementIndex]["statements"][optionToUse];
-            randomOptions.Remove(optionToUse);
+                optionToUse = randomOptions[Random.Range(0, randomOptions.Count)];
+                option4Text.text = statements[statementIndex]["statements"][optionToUse];
+                randomOptions.Remove(optionToUse);
 
-            if (randomOptions.Contains(questionStatementType)) // Checks if correct answer is the one left behind
-            {
-                List<TextMeshProUGUI> optionButtons = new List<TextMeshProUGUI> { option1Text, option2Text, option3Text, option4Text };
-
-                optionButtons[Random.Range(0, optionButtons.Count)].text = statements[statementIndex]["statements"][questionStatementType]; // Adds correct answer to button group
-            }
-
-            // Determine which is the correct button
-            List<TextMeshProUGUI> optionTexts = new List<TextMeshProUGUI> { option1Text, option2Text, option3Text, option4Text };
-
-            for (int i = 0; i < optionTexts.Count; i++) // Loops through optionTexts, to get value, use optionTexts[i]
-            {
-                if (optionTexts[i].text == statements[statementIndex]["statements"][questionStatementType])
+                if (randomOptions.Contains(questionStatementType)) // Checks if correct answer is the one left behind
                 {
-                    correctButton = optionTexts[i].gameObject.transform.parent.gameObject;
+                    List<TextMeshProUGUI> optionButtons = new List<TextMeshProUGUI> { option1Text, option2Text, option3Text, option4Text };
+
+                    optionButtons[Random.Range(0, optionButtons.Count)].text = statements[statementIndex]["statements"][questionStatementType]; // Adds correct answer to button group
+                }
+
+                // Determine which is the correct button
+                List<TextMeshProUGUI> optionTexts = new List<TextMeshProUGUI> { option1Text, option2Text, option3Text, option4Text };
+
+                for (int i = 0; i < optionTexts.Count; i++) // Loops through optionTexts, to get value, use optionTexts[i]
+                {
+                    if (optionTexts[i].text == statements[statementIndex]["statements"][questionStatementType])
+                    {
+                        correctButton = optionTexts[i].gameObject.transform.parent.gameObject;
+                    }
                 }
             }
         }
+
+        if (usedQuestions.Count >= questionsAsList.Count & usedAdvQuestions.Count >= advQuestionsAsList.Count)
+        {
+            // Regular statements
+            List<int> usableIndices = statements.Keys.ToList();
+            usableIndices.Remove(statementIndex); // Remove the current statement index from the list (so you don't get the same statement twice)
+            statementIndex = Random.Range(1, usableIndices.Count + 1); // Indexes by 1 instead of 0, the way it is in the dict
+
+            originalStatement = statements[statementIndex]["statements"]["original"];
+            statementTextInGame.text = originalStatement;
+
+            usedQuestions.Clear();
+            usedAdvQuestions.Clear();
+
+            player.GetComponent<PlayerMoveScript>().regularQuestionNumber = 0;
+            player.GetComponent<PlayerMoveScript>().advQuestionNumber = 0;
+        }
+
         questionText.gameObject.SetActive(true);
         statementTextQuestionView.gameObject.SetActive(true);
 
@@ -284,7 +341,13 @@ public class LogicSystemScript : MonoBehaviour
         if (button == correctButton)
         {
             isCorrectText.text = "Correct!";
-            playerScore += 1;
+            if (questionType == null) // If question is advanced
+            {
+                playerScore += 2;
+            } else
+            {
+                playerScore += 1;
+            }
             scoreText.text = playerScore.ToString();
         }
         else
@@ -296,21 +359,25 @@ public class LogicSystemScript : MonoBehaviour
         {
             explanationText.text = "Explanation: " + statements[statementIndex]["reasons"][questionStatementType];
         }
-        else
+        else if (questionType == "whatIs")
         {
             explanationText.text = "Explanation: " + whatIsExplanations[questionStatementType];
+        } else if (questionType == null)
+        {
+            explanationText.text = "Explanation: " + "Uhhhhhhh...explanation!";
         }
     }
 
     [ContextMenu("Load Data")]
-    public (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>, Dictionary<string, string>) loadDataFromText()
+    public (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>, Dictionary<string, string>, Dictionary<int, Dictionary<string, string>>, Dictionary<string, string>, List<string>) loadDataFromText()
     {
         string statementsTextWithComments = statementsList.text;
         string advStatementstextWithComments = advancedStatementsList.text;
         string questionsTextWithComments = questionsList.text;
         string whatIsExplanationsTextWithComments = whatIsExplanationsList.text;
+        string advQuestionsTextWithComments = advQuestionsListText.text;
 
-        List<string> textFiles = new List<string> { statementsTextWithComments, questionsTextWithComments, whatIsExplanationsTextWithComments, advStatementstextWithComments }; // Two text files as strings with \n separator
+        List<string> textFiles = new List<string> { statementsTextWithComments, questionsTextWithComments, whatIsExplanationsTextWithComments, advStatementstextWithComments, advQuestionsTextWithComments }; // Two text files as strings with \n separator
         List<List<string>> textFilesEdited = editTextFiles(textFiles);
 
         // Statement-specific
@@ -325,7 +392,7 @@ public class LogicSystemScript : MonoBehaviour
 
         Dictionary<int, List<string>> statementsIndexed = createNumberLists(textFilesEdited[0], numberOfSections);
 
-        // At this point you have the dictionary, statements, with the keys of each conditional statement number.
+        // At this point you have the dictionary, statementsIndexed, with the keys of each conditional statement number.
 
         Dictionary<int, Dictionary<string, string>> statementsContentSorted = getContentFromIndexedLines(statementsIndexed);
 
@@ -426,7 +493,6 @@ public class LogicSystemScript : MonoBehaviour
         }
 
         // Advanced statements-specific (very similar to statements)
-        Dictionary<int, Dictionary<string, Dictionary<string, string>>> advancedStatements = new Dictionary<int, Dictionary<string, Dictionary<string, string>>>(); // Int is index, second dict key is reasons/statements/truth, third dict key is ponens/tollens
 
         List<string> advNumLines = getLinesStartsWith(textFilesEdited[3], "|");
         int advNumberOfSections = Int32.Parse(advNumLines[0].Substring(1));
@@ -435,13 +501,38 @@ public class LogicSystemScript : MonoBehaviour
             throw new Exception("There is more than one number line, starting with |, in the AdvConditionalStatementList.");
         }
 
-        textFilesEdited[4] = removeLinesStartWith(textFilesEdited[3], "|");
+        textFilesEdited[3] = removeLinesStartWith(textFilesEdited[3], "|");
         Dictionary<int, List<string>> advStatementsIndexed = createNumberLists(textFilesEdited[3], advNumberOfSections);
 
         // At this point you have the dictionary, advStatementsIndexed, with the keys of each conditional statement number.
-        Debug.Log(string.Join(",", advStatementsIndexed.Keys));
 
-        return (statements, questions, questionsListToReturn, whatIsExplanations);
+        Dictionary<int, Dictionary<string, string>> advancedStatements = getContentFromAdvIndexedLines(advStatementsIndexed);
+
+        // Advanced Questions List Specific
+
+        List<string> advQuestionsListOriginal = textFilesEdited[4];
+        Dictionary<string, string> advQuestionsDict = new Dictionary<string, string>(); // ponens/tollens = key, question = value
+
+        for (int l = 0; l < advQuestionsListOriginal.Count; l++) // Loops through lines in questions list
+        {
+            switch (advQuestionsListOriginal[l][0])
+            {
+                case '<':
+                    advQuestionsDict.Add("ponens", advQuestionsListOriginal[l].Substring(1));
+                    break;
+                case '_':
+                    advQuestionsDict.Add("tollens", advQuestionsListOriginal[l].Substring(1));
+                    break;
+            }
+        }
+
+        List<string> advQuestionsList = new List<string>();
+        for (int m = 0; m < advQuestionsListOriginal.Count; m++)
+        {
+            advQuestionsList.Add(advQuestionsListOriginal[m].Substring(1));
+        }
+
+        return (statements, questions, questionsListToReturn, whatIsExplanations, advancedStatements, advQuestionsDict, advQuestionsList);
     }
 
     // Helper methods for loadDataFromText
@@ -477,6 +568,8 @@ public class LogicSystemScript : MonoBehaviour
         List<string> statementsEdited = new List<string>();
         List<string> questionsEdited = new List<string>();
         List<string> whatIsEdited = new List<string>();
+        List<string> advStatementsEdited = new List<string>();
+        List<string> advQuestionsEdited = new List<string>();
 
         for (int i = 0; i < textFiles.Count; i++) // Loops through textFiles, to get value, use textFiles[i]
         {
@@ -494,10 +587,16 @@ public class LogicSystemScript : MonoBehaviour
                 case 2:
                     whatIsEdited = linesListNoComments;
                     break;
+                case 3:
+                    advStatementsEdited = linesListNoComments;
+                    break;
+                case 4:
+                    advQuestionsEdited = linesListNoComments;
+                    break;
             }
         }
 
-        List<List<string>> textFilesEdited = new List<List<string>> { statementsEdited, questionsEdited, whatIsEdited};
+        List<List<string>> textFilesEdited = new List<List<string>> { statementsEdited, questionsEdited, whatIsEdited, advStatementsEdited, advQuestionsEdited };
         return textFilesEdited;
     }
     private Dictionary<int, List<string>> createNumberLists(List<string> textFile, int numberOfNums)
@@ -522,7 +621,7 @@ public class LogicSystemScript : MonoBehaviour
     }
     private Dictionary<int, Dictionary<string, string>> getContentFromIndexedLines(Dictionary<int, List<string>> statementsIndexed)
     {
-        Dictionary<int, Dictionary<string, string>> statements = new Dictionary<int, Dictionary<string, string>>(); // Dictionary<int> = indexes (1, 2, etc), next part: Dictionary<string> = type, so "original", "converse" etc, nextpart: 
+        Dictionary<int, Dictionary<string, string>> statements = new Dictionary<int, Dictionary<string, string>>(); // Dictionary<int> = indexes (1, 2, etc), next part: Dictionary<string> = type, so "statements", "original", "converse" etc, nextpart: line without the type indicator, so just "" and the T/F value
 
         foreach (KeyValuePair<int, List<string>> entry in statementsIndexed) // Loops through the keys (numbers) and their value (List of lines), to get key, use entry.Key
         {
@@ -560,6 +659,58 @@ public class LogicSystemScript : MonoBehaviour
         }
 
         return statements;
+    }
+    private Dictionary<int, Dictionary<string, string>> getContentFromAdvIndexedLines(Dictionary<int, List<string>> advStatementsIndexed)
+    {
+        Dictionary<int, Dictionary<string, string>> advStatements = new Dictionary<int, Dictionary<string, string>>(); // Dictionary<int> = indexes (1, 2, etc), next part: Dictionary<string> = type, so "statements", "original", "converse" etc, nextpart: line without the type indicator, so just "" and the T/F value
+
+        foreach (KeyValuePair<int, List<string>> entry in advStatementsIndexed) // Loops through the keys (numbers) and their value (List of lines), to get key, use entry.Key
+        {
+            List<string> linesList = entry.Value; // List of lines under the index we are looping through
+            Dictionary<string, string> sortedLines = new Dictionary<string, string>(); // Dict to store each line as it is sorted by ponens/tollens
+
+            for (int i = 0; i < linesList.Count; i++) // Loops through linesList (list of lines under index), to get value, use linesList[i]
+            {
+                string currentLine = linesList[i];
+
+                switch (currentLine[0]) // switch first character in the line we're working with
+                {
+                    case '=': // if that char is an = (statements)
+                        string currentLineSubstring = linesList[i].Substring(1);
+
+                        int typeCounter = 1;
+                        int previousStartIndex = 0;
+                        int length = 0;
+                        for (int j = 0; j < currentLineSubstring.Length; j++) // Loops through this line, to get char, use currentLine[j]
+                        {
+                            if (currentLineSubstring[j] == '|')
+                            {
+                                switch (typeCounter)
+                                {
+                                    case 1:
+                                        sortedLines.Add("ponens", currentLineSubstring.Substring(previousStartIndex, length));
+                                        break;
+                                    case 2:
+                                        sortedLines.Add("tollens", currentLineSubstring.Substring(previousStartIndex + 1, length - 1));
+                                        break;
+                                }
+                                previousStartIndex = j;
+                                typeCounter++;
+                                length = 0;
+                            }
+                            length++;
+                        }
+
+                        break;
+                    default:
+                        throw new Exception("Not all lines in ConditionalStatementList have a type value preceding them");
+                }
+            }
+
+            advStatements.Add(entry.Key, sortedLines);
+        }
+
+        return advStatements;
     }
     private Dictionary<int, Dictionary<string, Dictionary<string, string>>> splitLinesIntoStatementsAndReasons(Dictionary<int, Dictionary<string, string>> statementsContentSorted) // In type, int is index, first string is statements/reasons, second string is type
     {
@@ -672,7 +823,6 @@ public class LogicSystemScript : MonoBehaviour
 
         return statements;
     }
-
     public void Update()
     {
         if (displayCountdown == true)

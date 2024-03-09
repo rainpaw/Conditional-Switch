@@ -1012,7 +1012,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &574964930
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2806,6 +2806,8 @@ MonoBehaviour:
   rb: {fileID: 1205390620}
   logic: {fileID: 0}
   gravityScale: 3
+  regularQuestionNumber: 0
+  advQuestionNumber: 0
 --- !u!58 &1205390622
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -3090,6 +3092,7 @@ MonoBehaviour:
   spawnRate: 1.5
   heightOffset: 4
   logic: {fileID: 0}
+  playerScript: {fileID: 0}
 --- !u!1 &1525120213
 GameObject:
   m_ObjectHideFlags: 0
@@ -3245,6 +3248,7 @@ MonoBehaviour:
   advancedStatementsList: {fileID: 4900000, guid: 07bc2a22e9330a2449ebb00e84c60fcd, type: 3}
   questionsList: {fileID: 4900000, guid: 4fe4e955a04a8ed49a7ecd88fe6d3a6d, type: 3}
   whatIsExplanationsList: {fileID: 4900000, guid: 007ccab5985435344a843cab0eb4011a, type: 3}
+  advQuestionsListText: {fileID: 4900000, guid: efcd7bc0a05b9404a95144c47d7ae0e6, type: 3}
   questionUI: {fileID: 2043382330}
   continueButton: {fileID: 281181124}
 --- !u!4 &1573073529

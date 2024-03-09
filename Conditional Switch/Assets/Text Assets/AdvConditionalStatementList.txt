@@ -5,8 +5,9 @@
 # _ = modus tollens
 #
 # THE NEXT LINE is the number of conditional statement sections that there are.
-|1
+|4
 #
-1="If a triangle has a 90 degree angle then it is a right triangle.\nA triangle has a 90 degree angle.\nTherefore, it is a right triangle."|"If a triangle has a 90 degree angle then it is a right triangle.\nA triangle is not a right triangle.\nTherefore, it does not have a 90 degree angle."|
-1<T""
-1_T""
+1="If a triangle has a 90 degree angle then it is a right triangle. A triangle has a 90 degree angle. Therefore, it is a right triangle."|"If a triangle has a 90 degree angle then it is a right triangle. A triangle is not a right triangle. Therefore, it does not have a 90 degree angle."|
+2="If you have a cast then you are injured. You have a cast. Therefore, you are injured."|"If you have a cast then you are injured. You are not injured. Therefore, you do not have a cast."|
+3="If you are 15 years old then you are a teenager. You are 15 years old. Therefore, you are a teenager."|"If you are 15 years old then you are a teenager. You are not a teenager. Therefore, you are not 15 years old."|
+4="If a shape is a square then it is a rectangle. A shape is a square. Therefore, it is a rectangle."|"If a shape is a square then it is a rectangle. A shape is not a rectangle. Therefore, it is not a square."|

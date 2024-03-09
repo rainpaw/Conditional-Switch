@@ -10,6 +10,9 @@ public class PlayerMoveScript : MonoBehaviour
 
     public float gravityScale = 3f;
 
+    public int regularQuestionNumber = 0;
+    public int advQuestionNumber = 0;
+
     private void Awake()
     {
         controls = new PlayerControls();
@@ -39,10 +42,12 @@ public class PlayerMoveScript : MonoBehaviour
             gameObject.SetActive(false);
         } else if (collision.gameObject.tag == "QuestionMarkBlock")
         {
-            logic.askQuestion();
+            regularQuestionNumber++;
+            logic.askQuestion(false);
         } else if (collision.gameObject.tag == "AdvancedQuestionMarkBlock")
         {
-            logic.askQuestion();
+            advQuestionNumber++;
+            logic.askQuestion(true);
         }
     }
 

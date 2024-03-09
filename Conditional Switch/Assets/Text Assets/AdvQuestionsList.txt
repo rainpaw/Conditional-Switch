@@ -1,0 +1,5 @@
+# List of Base Advanced Questions to ask the player
+# Created by rainpaw
+#
+<What is the modus ponens form of the original conditional statement?
+_What is the modus tollens form of the original conditional statement?

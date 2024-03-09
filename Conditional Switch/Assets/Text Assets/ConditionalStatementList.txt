@@ -14,25 +14,32 @@
 #>["The original conditional statement is true because"|"Reason for Inverse"|"Reason for Converse"|"Reason for Contrapositive"|"Reason for Biconditional"]
 #
 # THE NEXT LINE is the number of conditional statement sections that there are.
-|3
+|4
 #
 1="If a triangle has a 90 degree angle then it is a right triangle."|"If a triangle does not have a 90 degree angle then it is not a right triangle."|"If a triangle is a right triangle then it has a 90 degree angle."|"If a triangle is not a right triangle then it does not have a 90 degree angle."|"A triangle has a 90 degree angle if and only if it is a right triangle."|
 1>T"The original conditional statement is true because a triangle that has a 90 degree angle must be a right triangle. A right triangle has an angle that is made up of two lines that are perpendicular, and this is the definition of a 90 degree angle."
 1~T"The inverse of the original conditional statement is true because any triangle that has a 90 degree angle is a right triangle by definition. Therefore, a triangle without a 90 degree angle must not be a right triangle."
 1+T"The converse of the original conditional statement is true because a right triangle must have a 90 degree angle as one of its angles. This is the definition of a right triangle."
 1-T"The contrapositive of the original conditional statement is true because unless a triangle is a right triangle, it cannot have a 90 degree angle. A right triangle is a triangle with a 90 degree angle, so any triangle that does not have that 90 degree angle cannot be a right triangle."
-1/T"The biconditional of the original conditional statement is true because a triangle can only 90 degree angle if it is a right triangle. Any other type of triangle cannot have a 90 degree angle in it, because then it would be a right triangle."
+1/T"The biconditional of the original conditional statement is true because a triangle can only have a 90 degree angle if it is a right triangle, and a right triangle has to have a 90 degree angle in it."
 #
 2="If you have a cast then you are injured."|"If you do not have a cast then you are not injured."|"If you are injured then you have a cast."|"If you are not injured then you do not have a cast."|"You have a cast if and only if you are injured."|
 2>T"The original conditional statement is true because a cast is only given to a person who has a broken or fractured bone, meaning that they are injured."
 2~F"The inverse of the original conditional statement is false because you can be injured and have a mild injury that does not require a cast."
 2+F"The converse of the original conditional statement is false because mild injuries do not require a cast, so you can have an injury and not have a cast."
 2-T"The contrapositive of the original conditional statement is true because if you are not injured there is no situation in which you would be given a cast. Casts are only given to people who have a broken or fractured bone, and that is an injury."
-2/T"The biconditional of the original conditional statement is true because the only situation in which you would have a cast would be if you are injured."
+2/F"The biconditional of the original conditional statement is false because while if you have a cast you are injured, just because you are injured doesn't necesarily mean that you have a cast."
 #
 3="If you are 15 years old then you are a teenager."|"If you are not 15 years old then you are not a teenager."|"If you are a teenager then you are 15 years old."|"If you are not a teenager then you are not 15 years old."|"You are 15 years old if and only if you are a teenager."|
 3>T"The original conditional statement is true because a 15-year-old is in their teen years (aged between 13 and 19), so they are a teenager."
 3~F"The inverse of the original conditional statement is false because you can be a 13 or a 16-year-old and still be classified as a teenager by definition."
 3+F"The converse of the original conditional statement is false because a teenager isn't only a person who is 15 years old. There are other teen ages (13-19)."
 3-T"The contrapositive of the original conditional statement is true because if you are NOT a teenager then you cannot be within 13-19 years old, since that is what teenager means. 15 is within those ages, so it is a teenager."
-3/T"The biconditional of the original conditional statement is true because the only circumstance in which you would be 15 years old would be if you were a teenager, because a 15 year old is a teenager by definition."
+3/F"The biconditional of the original conditional statement is false because a teenager can be anyone from 13-19 years, not just someone who is 15 years old."
+#
+4="If a shape is a square then it is a rectangle."|"If a shape is not a square then it is not a rectangle."|"If a shape is a rectangle then it is a square."|"If a shape is not a rectangle then it is not a square."|"A shape is a square if and only if it is a rectangle."|
+4>T"The original conditional statement is true because a square is a shape with all 4 sides being equal and adjacent sides being perpendicular, and a shape with perpendicular adacent sides is a rectangle, so a square is a rectangle."
+4~F"The inverse of the original conditional statement is false because a shape can be a rectangle with sides that are not equal, and in that situation, it isn't a square, but it is a rectangle."
+4+F"The converse of the original conditional statement is false because a rectangle can have different side lengths, while in a square, they have to be the same, so you can have a shape that is a rectangle but not a square."
+4-T"The contrapositive of the original conditional statement is true because a square is a rectangle, so if you have a shape that isn't a rectangle then it can't be a square."
+4/F"The biconditional of the original conditional statement is false because a shape that is a square is a rectangle but a shape that is a rectangle isn't always a square."
