@@ -6,12 +6,14 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using Random = UnityEngine.Random;
 using System.Globalization;
+using Unity.VisualScripting;
 
 public class LogicSystemScript : MonoBehaviour
 {
     private GameObject player;
     private Rigidbody2D playerRigidbody;
     private Vector3 previousVelocity;
+    private float previousGravScale;
 
     public TextMeshProUGUI countdownText;
     public bool gameHasStarted = false;
@@ -37,6 +39,7 @@ public class LogicSystemScript : MonoBehaviour
     public DeathParticlesScript deathParticles;
 
     public GameObject gameOverScreen;
+    public GameObject pauseMenu;
 
     public TextMeshProUGUI statementTextInGame;
     public TextMeshProUGUI questionText;
@@ -48,6 +51,7 @@ public class LogicSystemScript : MonoBehaviour
     public TextAsset questionsList;
     public TextAsset whatIsExplanationsList;
     public TextAsset advQuestionsListText;
+    public TextAsset advExplanationsText;
     public GameObject questionUI;
     public GameObject continueButton;
 
@@ -65,13 +69,14 @@ public class LogicSystemScript : MonoBehaviour
     Dictionary<int, Dictionary<string, string>> advStatements = new Dictionary<int, Dictionary<string, string>>();
     Dictionary<string,string> advQuestions = new Dictionary<string, string>();
     List<string> advQuestionsAsList = new List<string>();
+    Dictionary<string, string> advExplanations = new Dictionary<string, string>();
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         playerRigidbody = player.GetComponent<Rigidbody2D>();
 
-        (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>, Dictionary<string, string>, Dictionary<int, Dictionary<string, string>>, Dictionary<string, string>, List<string>) informationFiles = loadDataFromText();
+        (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>, Dictionary<string, string>, Dictionary<int, Dictionary<string, string>>, Dictionary<string, string>, List<string>, Dictionary<string, string>) informationFiles = loadDataFromText();
 
         statements = informationFiles.Item1;
         questions = informationFiles.Item2;
@@ -80,6 +85,7 @@ public class LogicSystemScript : MonoBehaviour
         advStatements = informationFiles.Item5;
         advQuestions = informationFiles.Item6;
         advQuestionsAsList = informationFiles.Item7;
+        advExplanations = informationFiles.Item8;
 
         // Get original statement and set to in-game text
         statementIndex = Random.Range(1, statements.Keys.Count+1); // Indexes by 1 instead of 0, the way it is in the dict
@@ -92,10 +98,10 @@ public class LogicSystemScript : MonoBehaviour
     }
 
     [ContextMenu("Increase Score")]
-    public void addScore()
+    public void addScore(int amount)
     {
-        playerScore += 1;
-        scoreText.text = playerScore.ToString();
+        playerScore += amount;
+        scoreText.text = "Score: " + playerScore.ToString();
     }
 
     public void gameOver()
@@ -112,9 +118,12 @@ public class LogicSystemScript : MonoBehaviour
     {
         isPaused = true;
         gameHasStarted = false;
+        previousGravScale = playerRigidbody.gravityScale;
         playerRigidbody.gravityScale = 0;
         previousVelocity = playerRigidbody.velocity;
         playerRigidbody.velocity = Vector3.zero;
+
+        pauseMenu.SetActive(true);
     }
     public void resumeGame(bool afterQuestion)
     {
@@ -133,15 +142,21 @@ public class LogicSystemScript : MonoBehaviour
             }
 
             questionUI.SetActive(false);
+
+            gameHasStarted = false;
+            displayCountdown = true;
+            countdownTimer = 0;
         } else
         {
             player.transform.position = new Vector3(-3, transform.position.y, 0);
+            playerRigidbody.gravityScale = previousGravScale;
             playerRigidbody.velocity = previousVelocity;
+
+            gameHasStarted = true;
+
+            pauseMenu.SetActive(false);
         }
         isPaused = false;
-        gameHasStarted = false;
-        displayCountdown = true;
-        countdownTimer = 0;
     }
     public void quitGame()
     {
@@ -212,6 +227,9 @@ public class LogicSystemScript : MonoBehaviour
 
         if (advanced)
         {
+            option1Text.fontSize = 40;
+            option2Text.fontSize = 40;
+
             List<string> advRandomOptions = new List<string> { "ponens", "tollens" };
             string advOptionToUse;
 
@@ -331,6 +349,9 @@ public class LogicSystemScript : MonoBehaviour
         option3Button.SetActive(false);
         option4Button.SetActive(false);
 
+        option1Button.GetComponentInChildren<TextMeshProUGUI>().fontSize = 50;
+        option2Button.GetComponentInChildren<TextMeshProUGUI>().fontSize = 50;
+
         questionText.gameObject.SetActive(false);
         statementTextQuestionView.gameObject.SetActive(false);
 
@@ -343,12 +364,11 @@ public class LogicSystemScript : MonoBehaviour
             isCorrectText.text = "Correct!";
             if (questionType == null) // If question is advanced
             {
-                playerScore += 2;
+                addScore(2);
             } else
             {
-                playerScore += 1;
+                addScore(1);
             }
-            scoreText.text = playerScore.ToString();
         }
         else
         {
@@ -364,20 +384,21 @@ public class LogicSystemScript : MonoBehaviour
             explanationText.text = "Explanation: " + whatIsExplanations[questionStatementType];
         } else if (questionType == null)
         {
-            explanationText.text = "Explanation: " + "Uhhhhhhh...explanation!";
+            explanationText.text = "Explanation: " + advExplanations[questionStatementType];
         }
     }
 
     [ContextMenu("Load Data")]
-    public (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>, Dictionary<string, string>, Dictionary<int, Dictionary<string, string>>, Dictionary<string, string>, List<string>) loadDataFromText()
+    public (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>, Dictionary<string, string>, Dictionary<int, Dictionary<string, string>>, Dictionary<string, string>, List<string>, Dictionary<string, string>) loadDataFromText()
     {
         string statementsTextWithComments = statementsList.text;
         string advStatementstextWithComments = advancedStatementsList.text;
         string questionsTextWithComments = questionsList.text;
         string whatIsExplanationsTextWithComments = whatIsExplanationsList.text;
         string advQuestionsTextWithComments = advQuestionsListText.text;
+        string advExplanationsTextWithComments = advExplanationsText.text;
 
-        List<string> textFiles = new List<string> { statementsTextWithComments, questionsTextWithComments, whatIsExplanationsTextWithComments, advStatementstextWithComments, advQuestionsTextWithComments }; // Two text files as strings with \n separator
+        List<string> textFiles = new List<string> { statementsTextWithComments, questionsTextWithComments, whatIsExplanationsTextWithComments, advStatementstextWithComments, advQuestionsTextWithComments, advExplanationsTextWithComments }; // Two text files as strings with \n separator
         List<List<string>> textFilesEdited = editTextFiles(textFiles);
 
         // Statement-specific
@@ -532,7 +553,27 @@ public class LogicSystemScript : MonoBehaviour
             advQuestionsList.Add(advQuestionsListOriginal[m].Substring(1));
         }
 
-        return (statements, questions, questionsListToReturn, whatIsExplanations, advancedStatements, advQuestionsDict, advQuestionsList);
+        // Advanced Explanations Specific
+
+        List<string> advExplanationsOriginal = textFilesEdited[5];
+        Dictionary<string, string> advExplanationsDict = new Dictionary<string, string>();
+
+        for (int n = 0; n < advExplanationsOriginal.Count; n++) // Loops through advExplanationsOriginal lines, to get value, use advExplanationsOriginal[n]
+        {
+            switch (advExplanationsOriginal[n][0])
+            {
+                case '<':
+                    advExplanationsDict.Add("ponens", advExplanationsOriginal[n].Substring(1));
+                    break;
+                case '_':
+                    advExplanationsDict.Add("tollens", advExplanationsOriginal[n].Substring(1));
+                    break;
+                default:
+                    throw new Exception("Not all lines in AdvExplanations have a type value preceding them!");
+            }
+        }
+
+        return (statements, questions, questionsListToReturn, whatIsExplanations, advancedStatements, advQuestionsDict, advQuestionsList, advExplanationsDict);
     }
 
     // Helper methods for loadDataFromText
@@ -570,6 +611,7 @@ public class LogicSystemScript : MonoBehaviour
         List<string> whatIsEdited = new List<string>();
         List<string> advStatementsEdited = new List<string>();
         List<string> advQuestionsEdited = new List<string>();
+        List<string> advExplanationsEdited = new List<string>();
 
         for (int i = 0; i < textFiles.Count; i++) // Loops through textFiles, to get value, use textFiles[i]
         {
@@ -593,10 +635,13 @@ public class LogicSystemScript : MonoBehaviour
                 case 4:
                     advQuestionsEdited = linesListNoComments;
                     break;
+                case 5:
+                    advExplanationsEdited = linesListNoComments;
+                    break;
             }
         }
 
-        List<List<string>> textFilesEdited = new List<List<string>> { statementsEdited, questionsEdited, whatIsEdited, advStatementsEdited, advQuestionsEdited };
+        List<List<string>> textFilesEdited = new List<List<string>> { statementsEdited, questionsEdited, whatIsEdited, advStatementsEdited, advQuestionsEdited, advExplanationsEdited };
         return textFilesEdited;
     }
     private Dictionary<int, List<string>> createNumberLists(List<string> textFile, int numberOfNums)
@@ -765,11 +810,11 @@ public class LogicSystemScript : MonoBehaviour
 
                         break;
                     case "original":
-                        reasonsDict.Add("original", lineType.Value.Substring(1));
+                        reasonsDict.Add("original", lineType.Value.Substring(1).Replace("\"", ""));
                         truthDict.Add("original", "T");
                         break;
                     case "inverse":
-                        reasonsDict.Add("inverse", lineType.Value.Substring(1));
+                        reasonsDict.Add("inverse", lineType.Value.Substring(1).Replace("\"", ""));
                         if (lineType.Value[0] == 'T')
                         {
                             truthDict.Add("inverse", "T");
@@ -779,7 +824,7 @@ public class LogicSystemScript : MonoBehaviour
                         }
                         break;
                     case "converse":
-                        reasonsDict.Add("converse", lineType.Value.Substring(1));
+                        reasonsDict.Add("converse", lineType.Value.Substring(1).Replace("\"", ""));
                         if (lineType.Value[0] == 'T')
                         {
                             truthDict.Add("converse", "T");
@@ -798,7 +843,7 @@ public class LogicSystemScript : MonoBehaviour
                         {
                             truthDict.Add("contrapositive", "F");
                         }
-                        reasonsDict.Add("contrapositive", lineType.Value.Substring(1));
+                        reasonsDict.Add("contrapositive", lineType.Value.Substring(1).Replace("\"", ""));
                         break;
                     case "biconditional":
                         if (lineType.Value[0] == 'T')
@@ -809,7 +854,7 @@ public class LogicSystemScript : MonoBehaviour
                         {
                             truthDict.Add("biconditional", "F");
                         }
-                        reasonsDict.Add("biconditional", lineType.Value.Substring(1));
+                        reasonsDict.Add("biconditional", lineType.Value.Substring(1).Replace("\"", ""));
                         break;
                 }
             }
@@ -867,11 +912,11 @@ public class LogicSystemScript : MonoBehaviour
 
                 if (!stringTimerRounded.Contains("."))
                 {
-                    timerText.text = stringTimerRounded + ".0";
+                    timerText.text = "Time: " + stringTimerRounded + ".0";
                 }
                 else
                 {
-                    timerText.text = stringTimerRounded;
+                    timerText.text = "Time: " + stringTimerRounded;
                 }
             }
         }

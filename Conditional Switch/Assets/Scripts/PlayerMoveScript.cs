@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMoveScript : MonoBehaviour
@@ -17,6 +18,7 @@ public class PlayerMoveScript : MonoBehaviour
     {
         controls = new PlayerControls();
         controls.Movement.SwitchGravity.performed += ctx => Switch();
+        controls.Movement.Pause.performed += ctx => logic.pauseGame();
     }
 
     private void Start()

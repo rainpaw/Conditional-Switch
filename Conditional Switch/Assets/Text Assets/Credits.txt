@@ -1,12 +1,15 @@
 # Credits
 # Made by rainpaw
 #
+# Possible link format: <link="ID">my link</link>
 This project turned out to be WAY MORE WORK than I thought it would be.
 
 Credits for Unity (game engine) help
 Game Maker's Toolkit's Unity tutorial video: https://www.youtube.com/watch?v=XtQMytORBmM
 Coco Code's "Master your Unity UI Buttons!" video: https://www.youtube.com/watch?v=cW-E4WEogzE
 Meetras' "How To Use The New Input System In Unity" video: https://www.youtube.com/watch?v=UyUogO2DvwY
+Brackeys' "PAUSE MENU in Unity" video: https://www.youtube.com/watch?v=JivuXdrIHK0
 
 Credits for conditional statement help:
 PDF about biconditional by FSU Math: https://www.math.fsu.edu/~wooland/hm2ed/P2M2ext.pdf
+Khanmigo helped me out a bit with understanding some of the conditional statements. It did NOT write any of the content in this game, that was all done by me.

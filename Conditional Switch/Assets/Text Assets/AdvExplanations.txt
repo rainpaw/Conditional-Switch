@@ -1,0 +1,5 @@
+# Advanced question explanations
+# Created by rainpaw
+#
+<The modus ponens form of a conditional statement is "If p then q. p is true. Therefore, q is true."
+_The modus tollens form of a conditional statement is "If p then q. q is not true. Therefore, p is not true."
