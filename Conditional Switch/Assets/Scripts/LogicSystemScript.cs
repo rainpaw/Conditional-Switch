@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using Random = UnityEngine.Random;
 using System.Globalization;
-using Unity.VisualScripting;
 
 public class LogicSystemScript : MonoBehaviour
 {
@@ -131,6 +130,15 @@ public class LogicSystemScript : MonoBehaviour
         Time.timeScale = 0f;
 
         pauseMenu.SetActive(true);
+    }
+    public void pauseGameQuestion()
+    {
+        isPaused = true;
+        gameHasStarted = false;
+        //previousGravScale = playerRigidbody.gravityScale;
+        playerRigidbody.gravityScale = 0;
+        //previousVelocity = playerRigidbody.velocity;
+        playerRigidbody.velocity = Vector3.zero;
     }
     public void resumeGame(bool afterQuestion)
     {
@@ -353,12 +361,13 @@ public class LogicSystemScript : MonoBehaviour
         continueButton.SetActive(false);
 
         questionUI.SetActive(true);
-        pauseGame();
+        pauseGameQuestion();
     }
 
     public void MainMenu()
     {
-        SceneManager.LoadScene("MainMenuScene");
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Menu");
     }
 
     public void onQuestionButtonClick(GameObject button)
