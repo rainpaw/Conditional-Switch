@@ -1,6 +1,6 @@
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerMoveScript : MonoBehaviour
 {
@@ -29,7 +29,7 @@ public class PlayerMoveScript : MonoBehaviour
 
     private void Switch()
     {
-        if (!logic.isPaused & logic.gameHasStarted)
+        if (!logic.isPaused & logic.gameHasStarted & !IsPointerOverPauseButton())
         {
             rb.gravityScale = 0 - rb.gravityScale;
         }
@@ -60,5 +60,23 @@ public class PlayerMoveScript : MonoBehaviour
     private void OnDisable()
     {
         controls.Disable();
+    }
+
+    public static bool IsPointerOverPauseButton()
+    {
+        PointerEventData currentEventData = new PointerEventData(EventSystem.current);
+        currentEventData.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        List<RaycastResult> raycastResults = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(currentEventData, raycastResults);
+
+        for (int i = 0; i < raycastResults.Count; i++) // Loops through raycastResults, to get value use raycastResults[i]
+        {
+            if (raycastResults[i].gameObject.layer == 6) // Layer 6 is the pause button layer
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

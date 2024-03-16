@@ -12,13 +12,14 @@ public class LogicSystemScript : MonoBehaviour
 {
     private GameObject player;
     private Rigidbody2D playerRigidbody;
-    private Vector3 previousVelocity;
-    private float previousGravScale;
+    //private Vector3 previousVelocity;
+    //private float previousGravScale;
 
     public TextMeshProUGUI countdownText;
     public bool gameHasStarted = false;
     private bool displayCountdown = true;
     private double countdownTimer;
+    public bool isPausedDuringCountdown = false;
 
     public GameObject option1Button;
     public GameObject option2Button;
@@ -116,17 +117,25 @@ public class LogicSystemScript : MonoBehaviour
     }
     public void pauseGame()
     {
+        if (gameHasStarted == false)
+        {
+            isPausedDuringCountdown = true;
+        }
         isPaused = true;
         gameHasStarted = false;
-        previousGravScale = playerRigidbody.gravityScale;
-        playerRigidbody.gravityScale = 0;
-        previousVelocity = playerRigidbody.velocity;
-        playerRigidbody.velocity = Vector3.zero;
+        //previousGravScale = playerRigidbody.gravityScale;
+        //playerRigidbody.gravityScale = 0;
+        //previousVelocity = playerRigidbody.velocity;
+        //playerRigidbody.velocity = Vector3.zero;
+
+        Time.timeScale = 0f;
 
         pauseMenu.SetActive(true);
     }
     public void resumeGame(bool afterQuestion)
     {
+        Time.timeScale = 1f;
+
         if (afterQuestion == true)
         {
             player.transform.position = new Vector3(-3, 2, 0);
@@ -148,11 +157,16 @@ public class LogicSystemScript : MonoBehaviour
             countdownTimer = 0;
         } else
         {
-            player.transform.position = new Vector3(-3, transform.position.y, 0);
-            playerRigidbody.gravityScale = previousGravScale;
-            playerRigidbody.velocity = previousVelocity;
-
-            gameHasStarted = true;
+            if (isPausedDuringCountdown == true)
+            {
+                gameHasStarted = false;
+            } else
+            {
+                gameHasStarted = true;
+            }
+            //player.transform.position = new Vector3(-3, transform.position.y, 0);
+            //playerRigidbody.gravityScale = previousGravScale;
+            //playerRigidbody.velocity = previousVelocity;
 
             pauseMenu.SetActive(false);
         }
@@ -161,7 +175,7 @@ public class LogicSystemScript : MonoBehaviour
     public void quitGame()
     {
         Application.Quit();
-    }
+    } // Actually, I think this is unused
 
     public void askQuestion(bool advanced)
     {
@@ -340,6 +354,11 @@ public class LogicSystemScript : MonoBehaviour
 
         questionUI.SetActive(true);
         pauseGame();
+    }
+
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("MainMenuScene");
     }
 
     public void onQuestionButtonClick(GameObject button)

@@ -206,7 +206,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8127780}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1573073528}
+        m_TargetAssemblyTypeName: LogicSystemScript, Assembly-CSharp
+        m_MethodName: MainMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8127780
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,7 +289,7 @@ GameObject:
   - component: {fileID: 11871325}
   - component: {fileID: 11871327}
   - component: {fileID: 11871326}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Pause Menu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -355,7 +367,7 @@ GameObject:
   - component: {fileID: 137103741}
   - component: {fileID: 137103743}
   - component: {fileID: 137103742}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Menu Button Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -489,7 +501,7 @@ GameObject:
   - component: {fileID: 163513067}
   - component: {fileID: 163513069}
   - component: {fileID: 163513068}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Game Over Screen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -531,7 +543,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1160,7 +1172,7 @@ GameObject:
   - component: {fileID: 479062264}
   - component: {fileID: 479062263}
   - component: {fileID: 479062262}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1401,7 +1413,7 @@ GameObject:
   - component: {fileID: 522938537}
   - component: {fileID: 522938539}
   - component: {fileID: 522938538}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: In-Game UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2472,7 +2484,7 @@ GameObject:
   - component: {fileID: 725558492}
   - component: {fileID: 725558491}
   - component: {fileID: 725558494}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Resume Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2605,7 +2617,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 81716c2a46edb5144a129f38dbe4bbac, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -2910,7 +2922,7 @@ GameObject:
   - component: {fileID: 1127268140}
   - component: {fileID: 1127268142}
   - component: {fileID: 1127268141}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Pause Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3793,7 +3805,7 @@ GameObject:
   - component: {fileID: 1485223293}
   - component: {fileID: 1485223295}
   - component: {fileID: 1485223294}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Resume Button Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3927,7 +3939,7 @@ GameObject:
   - component: {fileID: 1541729292}
   - component: {fileID: 1541729294}
   - component: {fileID: 1541729293}
-  m_Layer: 6
+  m_Layer: 5
   m_Name: Question UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4031,6 +4043,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   countdownText: {fileID: 1993364383}
   gameHasStarted: 0
+  isPausedDuringCountdown: 0
   option1Button: {fileID: 588087065}
   option2Button: {fileID: 1203015508}
   option3Button: {fileID: 1237924012}
@@ -4218,7 +4231,7 @@ GameObject:
   - component: {fileID: 1711220679}
   - component: {fileID: 1711220678}
   - component: {fileID: 1711220681}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Menu Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4288,7 +4301,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1711220679}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1573073528}
+        m_TargetAssemblyTypeName: LogicSystemScript, Assembly-CSharp
+        m_MethodName: MainMenu
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1711220679
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4339,7 +4364,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 81716c2a46edb5144a129f38dbe4bbac, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -4918,7 +4943,7 @@ GameObject:
   - component: {fileID: 1860715126}
   - component: {fileID: 1860715125}
   - component: {fileID: 1860715128}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Pause Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
