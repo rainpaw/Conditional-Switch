@@ -1,17 +1,15 @@
-# Credits
-# Made by rainpaw
-#
-# Possible link format: <link="ID">my link</link>
 This project turned out to be WAY MORE WORK than I thought it would be.
 
 Credits for Unity (game engine) help
-Game Maker's Toolkit's Unity tutorial video: https://www.youtube.com/watch?v=XtQMytORBmM
-Coco Code's "Master your Unity UI Buttons!" video: https://www.youtube.com/watch?v=cW-E4WEogzE
-Meetras' "How To Use The New Input System In Unity" video: https://www.youtube.com/watch?v=UyUogO2DvwY
-Brackeys' "PAUSE MENU in Unity" video: https://www.youtube.com/watch?v=JivuXdrIHK0
-Brackeys' "START MENU in Unity" video: https://www.youtube.com/watch?v=zc8ac_qUXQY
+Game Maker's Toolkit's Unity tutorial video: <color=#2B75FF><link="https://www.youtube.com/watch?v=XtQMytORBmM">https://www.youtube.com/watch?v=XtQMytORBmM</link></color>
+Coco Code's "Master your Unity UI Buttons!" video: <color=#2B75FF><link="https://www.youtube.com/watch?v=cW-E4WEogzE">https://www.youtube.com/watch?v=cW-E4WEogzE</link></color>
+Meetras' "How To Use The New Input System In Unity" video: <color=#2B75FF><link="https://www.youtube.com/watch?v=UyUogO2DvwY">https://www.youtube.com/watch?v=UyUogO2DvwY</link></color>
+Brackeys' "PAUSE MENU in Unity" video: <color=#2B75FF><link="https://www.youtube.com/watch?v=JivuXdrIHK0">https://www.youtube.com/watch?v=JivuXdrIHK0</link></color>
+Brackeys' "START MENU in Unity" video: <color=#2B75FF><link="https://www.youtube.com/watch?v=zc8ac_qUXQY">https://www.youtube.com/watch?v=zc8ac_qUXQY</link></color>
 TobiasF on StackOverflow for helping with the writing of one very small chunk of code.
+Neohun on the Unity Forum for his script that allows ContentSizeFitter to add a max width.
+Epsilon_Delta's AMAZING script that makes this credits page have clickable hyperlinks.
 
 Credits for conditional statement help:
-PDF about biconditional by FSU Math: https://www.math.fsu.edu/~wooland/hm2ed/P2M2ext.pdf
+PDF about biconditional by FSU Math: <color=#2B75FF><link="https://www.math.fsu.edu/~wooland/hm2ed/P2M2ext.pdf">https://www.math.fsu.edu/~wooland/hm2ed/P2M2ext.pdf</link></color>
 Khanmigo helped me out a bit with understanding some of the conditional statements. It did NOT write any of the content in this game, that was all done by me.
