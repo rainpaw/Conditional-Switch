@@ -6,3 +6,14 @@ This is the GitHub repository where all of the source files for this game are st
 
 # Why did you decide to do this?
 I made this because I really like programming, and this idea had been floating around in my head for a while. I finally got around to creating it, and I learned a lot along the way.
+
+# How long did this take you?
+This took my way longer than I thought, and it consumed a lot of time over the past couple of months.
+
+#  I found a bug. Where can I report this?
+Great job! You can report bugs here: https://github.com/rainpaw/Conditional-Switch/issues . This is also where you can request features and ideas for the game in the future.
+
+# What features are you planning on adding?
+I plan to add some sound, because currently there isn't any music or sound effects and those are a big part of any game. I also plan to add a personal and possibly global highscore list where you can see what your past scores have been.
+
+Thanks for reading down this far, and enjoy the game Conditional Switch!
