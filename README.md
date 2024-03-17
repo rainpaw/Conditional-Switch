@@ -2,11 +2,11 @@
 
 A game where you switch gravity to dodge dangerous obstacles while answering questions about conditional statements.
 
-[What is this?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#what-is-this)
-[Why did you decide to do this?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#why-did-you-decide-to-do-this)
-[How long did this take you?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#how-long-did-this-take-you)
-[I found a bug. Where can I report this?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#i-found-a-bug-where-can-i-report-this)
-[What features are you planning on adding?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#what-features-are-you-planning-on-adding)
+[What is this?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#what-is-this)<br>
+[Why did you decide to do this?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#why-did-you-decide-to-do-this)<br>
+[How long did this take you?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#how-long-did-this-take-you)<br>
+[I found a bug. Where can I report this?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#i-found-a-bug-where-can-i-report-this)<br>
+[What features are you planning on adding?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#what-features-are-you-planning-on-adding)<br>
 
 ## What is this?
 
