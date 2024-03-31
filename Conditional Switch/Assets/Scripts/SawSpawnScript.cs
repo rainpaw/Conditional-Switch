@@ -64,9 +64,9 @@ public class PipeSpawnScript : MonoBehaviour
                     }
                 } else // Not in presentation mode
                 {
-                    if (Random.Range(1, 6) == 1)
+                    if (Random.Range(1, 8) == 1)
                     {
-                        if (Random.Range(1, 4) == 1 & playerScript.advQuestionNumber < 2) // 2 questions: what is for modus ponens and tollens
+                        if (Random.Range(1, 5) == 1 & playerScript.advQuestionNumber < 2) // 2 questions: what is for modus ponens and tollens
                         {
                             Instantiate(advancedQuestionMarkBlock, transform.position, transform.rotation);
                         }
