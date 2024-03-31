@@ -1,7 +1,7 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -12,6 +12,7 @@ public class MainMenuScript : MonoBehaviour
     public Toggle fullscreenToggle;
     public Toggle presModeToggle;
     public Slider volumeSlider;
+    public TextMeshProUGUI highscoreText;
 
     Resolution[] resolutions;
 
@@ -50,7 +51,7 @@ public class MainMenuScript : MonoBehaviour
         audioMixer.SetFloat("volume", PlayerPrefs.GetFloat("volume", 0));
         volumeSlider.value = PlayerPrefs.GetFloat("volume", 0);
 
-        bool presentationMode = PlayerPrefs.GetInt("fullscreen", 0) == 1;
+        bool presentationMode = PlayerPrefs.GetInt("presentationMode", 0) == 1;
 
         if (presentationMode == true)
         {
@@ -60,6 +61,8 @@ public class MainMenuScript : MonoBehaviour
         }
 
         presModeToggle.isOn = presentationMode;
+
+        highscoreText.text = "Highscore: " + PlayerPrefs.GetInt("highscore", 0).ToString();
     }
 
     public void SetResolution(int resolutionIndex)
@@ -89,6 +92,12 @@ public class MainMenuScript : MonoBehaviour
     public void SetPresentationMode(bool isPresentationMode)
     {
         PlayerPrefs.SetInt("presentationMode", isPresentationMode ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    public void DeletePrefs()
+    {
+        PlayerPrefs.DeleteAll();
         PlayerPrefs.Save();
     }
 

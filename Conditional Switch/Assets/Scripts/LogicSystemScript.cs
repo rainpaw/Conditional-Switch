@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using System.Linq;
 using Random = UnityEngine.Random;
 using System.Globalization;
+using UnityEngine.UIElements;
 
 public class LogicSystemScript : MonoBehaviour
 {
@@ -79,8 +80,7 @@ public class LogicSystemScript : MonoBehaviour
 
     private void Awake()
     {
-        //isPresentationMode = PlayerPrefs.GetInt("presentationMode", 0) == 1; 
-        isPresentationMode = true; // DISABEFIAHEGAERTYGHMAETRMUIGHETAUIG<HTRUIGHEMRUGIHERIMGTERHG<EURIFGHERAMGUERHGUIMGHDUGHREGHFNGJHGERUGHDFIUMGHEMRUIGHRMUGHEGUTHMgd
+        isPresentationMode = PlayerPrefs.GetInt("presentationMode", 0) == 1; 
     }
 
     private void Start()
@@ -118,6 +118,11 @@ public class LogicSystemScript : MonoBehaviour
 
     public void gameOver()
     {
+        if (PlayerPrefs.GetInt("highscore", 0) < playerScore)
+        {
+            PlayerPrefs.SetInt("highscore", playerScore);
+        }
+
         deathParticles.runParticles();
         gameOverScreen.SetActive(true);
     }
