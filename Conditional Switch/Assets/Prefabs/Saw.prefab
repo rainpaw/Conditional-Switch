@@ -153,3 +153,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: 480
   logic: {fileID: 0}
+  col: {fileID: 4747988219017399992}

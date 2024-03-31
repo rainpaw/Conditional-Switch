@@ -7,10 +7,17 @@ public class SawMovementScript : MonoBehaviour
 
     public LogicSystemScript logic;
 
+    public Collider2D col;
+
     private void Start()
     {
         moveSpeed = Random.Range(2, 6);
         logic = GameObject.FindGameObjectWithTag("Logic").GetComponent<LogicSystemScript>();
+
+        if (logic.isPresentationMode)
+        {
+            col.enabled = false;
+        }
     }
 
     private void Update()

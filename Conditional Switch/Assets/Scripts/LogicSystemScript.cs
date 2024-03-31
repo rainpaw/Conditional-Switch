@@ -11,6 +11,7 @@ public class LogicSystemScript : MonoBehaviour
 {
     private GameObject player;
     private Rigidbody2D playerRigidbody;
+    private PlayerMoveScript playerScript;
     //private Vector3 previousVelocity;
     //private float previousGravScale;
 
@@ -19,6 +20,8 @@ public class LogicSystemScript : MonoBehaviour
     private bool displayCountdown = true;
     private double countdownTimer;
     public bool isPausedDuringCountdown = false;
+
+    public bool isPresentationMode = false;
 
     public GameObject option1Button;
     public GameObject option2Button;
@@ -59,24 +62,34 @@ public class LogicSystemScript : MonoBehaviour
     private string questionStatementType;
 
     private string originalStatement = "[placeholder]";
-    Dictionary<int, Dictionary<string, Dictionary<string, string>>> statements = new Dictionary<int, Dictionary<string, Dictionary<string, string>>>();
-    Dictionary<string, Dictionary<string, string>> questions = new Dictionary<string, Dictionary<string, string>>();
-    int statementIndex = 0;
-    private List<int> usedQuestions = new List<int>();
-    private List<int> usedAdvQuestions = new List<int>();
-    List<string> questionsAsList = new List<string>();
-    Dictionary<string, string> whatIsExplanations = new Dictionary<string, string>();
-    Dictionary<int, Dictionary<string, string>> advStatements = new Dictionary<int, Dictionary<string, string>>();
-    Dictionary<string,string> advQuestions = new Dictionary<string, string>();
-    List<string> advQuestionsAsList = new List<string>();
-    Dictionary<string, string> advExplanations = new Dictionary<string, string>();
+    private Dictionary<int, Dictionary<string, Dictionary<string, string>>> statements = new Dictionary<int, Dictionary<string, Dictionary<string, string>>>();
+    private Dictionary<string, Dictionary<string, string>> questions = new Dictionary<string, Dictionary<string, string>>();
+    private int statementIndex = 0;
+    private List<string> usedQuestions = new List<string>();
+    private List<string> usedAdvQuestions = new List<string>();
+    private string[] questionsAsList;
+    private Dictionary<string, string> whatIsExplanations = new Dictionary<string, string>();
+    private Dictionary<int, Dictionary<string, string>> advStatements = new Dictionary<int, Dictionary<string, string>>();
+    private Dictionary<string,string> advQuestions = new Dictionary<string, string>();
+    private string[] advQuestionsAsList;
+    private Dictionary<string, string> advExplanations = new Dictionary<string, string>();
+
+    private int nextQuestionNumber = 0;
+    private int nextAdvQuestionNumber = 0;
+
+    private void Awake()
+    {
+        //isPresentationMode = PlayerPrefs.GetInt("presentationMode", 0) == 1; 
+        isPresentationMode = true; // DISABEFIAHEGAERTYGHMAETRMUIGHETAUIG<HTRUIGHEMRUGIHERIMGTERHG<EURIFGHERAMGUERHGUIMGHDUGHREGHFNGJHGERUGHDFIUMGHEMRUIGHRMUGHEGUTHMgd
+    }
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         playerRigidbody = player.GetComponent<Rigidbody2D>();
+        playerScript = player.GetComponent<PlayerMoveScript>();
 
-        (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>, Dictionary<string, string>, Dictionary<int, Dictionary<string, string>>, Dictionary<string, string>, List<string>, Dictionary<string, string>) informationFiles = loadDataFromText();
+        (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, string[], Dictionary<string, string>, Dictionary<int, Dictionary<string, string>>, Dictionary<string, string>, string[], Dictionary<string, string>) informationFiles = loadDataFromText();
 
         statements = informationFiles.Item1;
         questions = informationFiles.Item2;
@@ -97,7 +110,6 @@ public class LogicSystemScript : MonoBehaviour
         countdownText.text = "3";
     }
 
-    [ContextMenu("Increase Score")]
     public void addScore(int amount)
     {
         playerScore += amount;
@@ -187,18 +199,33 @@ public class LogicSystemScript : MonoBehaviour
 
     public void askQuestion(bool advanced)
     {
-        int questionNumber;
+        int questionNumber = 0;
+        string questionsAsListAndNumber;
 
         if (advanced)
         {
-            questionNumber = Random.Range(0, advQuestionsAsList.Count);
-            usedAdvQuestions.Add(questionNumber);
+            if (isPresentationMode)
+            {
+                questionNumber = nextAdvQuestionNumber;
+                nextAdvQuestionNumber++;
+            } else
+            {
+                questionNumber = Random.Range(0, advQuestionsAsList.Length);
+                while (usedAdvQuestions.Contains(advQuestionsAsList[questionNumber]))
+                {
+                    questionNumber = Random.Range(0, advQuestionsAsList.Length);
+                }
+            }
 
-            questionText.text = advQuestionsAsList[questionNumber];
+            questionsAsListAndNumber = advQuestionsAsList[questionNumber];
+
+            usedAdvQuestions.Add(questionsAsListAndNumber);
+
+            questionText.text = questionsAsListAndNumber;
 
             foreach (KeyValuePair<string, string> advQuestionItem in advQuestions) // Loops through ponens and tollens in dict
             {
-                if (advQuestionsAsList[questionNumber] == advQuestionItem.Value)
+                if (questionsAsListAndNumber == advQuestionItem.Value)
                 {
                     questionType = null; // there is no question type in the advanced questions
                     questionStatementType = advQuestionItem.Key; // ponens or tollens (the statement that the question uses/needs
@@ -208,16 +235,30 @@ public class LogicSystemScript : MonoBehaviour
             statementTextQuestionView.text = "Original: " + statements[statementIndex]["statements"]["original"]; // show original statement on screen so player can create the modus
         } else
         {
-            questionNumber = Random.Range(0, questionsAsList.Count);
-            usedQuestions.Add(questionNumber);
+            if (isPresentationMode)
+            {
+                questionNumber = nextQuestionNumber;
+                nextQuestionNumber++;
+            } else
+            {
+                questionNumber = Random.Range(0, questionsAsList.Length);
+                while (usedQuestions.Contains(questionsAsList[questionNumber]))
+                {
+                    questionNumber = Random.Range(0, questionsAsList.Length);
+                }
+            }
 
-            questionText.text = questionsAsList[questionNumber];
+            questionsAsListAndNumber = questionsAsList[questionNumber];
+
+            usedQuestions.Add(questionsAsListAndNumber);
+
+            questionText.text = questionsAsListAndNumber;
 
             foreach (KeyValuePair<string, Dictionary<string, string>> questionItem in questions) // Loops through isTrue and whatIs in dictionary
             {
                 foreach (KeyValuePair<string, string> subQuestionItem in questionItem.Value) // Loops through questions in that subthing
                 {
-                    if (questionsAsList[questionNumber] == subQuestionItem.Value)
+                    if (questionsAsListAndNumber == subQuestionItem.Value)
                     {
                         questionType = questionItem.Key; // isTrue or whatIs
                         questionStatementType = subQuestionItem.Key; // original, inverse, etc (the statement that the question uses/needs
@@ -336,21 +377,59 @@ public class LogicSystemScript : MonoBehaviour
             }
         }
 
-        if (usedQuestions.Count >= questionsAsList.Count & usedAdvQuestions.Count >= advQuestionsAsList.Count)
+        if (isPresentationMode)
         {
-            // Regular statements
-            List<int> usableIndices = statements.Keys.ToList();
-            usableIndices.Remove(statementIndex); // Remove the current statement index from the list (so you don't get the same statement twice)
-            statementIndex = Random.Range(1, usableIndices.Count + 1); // Indexes by 1 instead of 0, the way it is in the dict
+            if (playerScript.advQuestionNumber == 3 && playerScript.regularQuestionNumber == 9)
+            {
+                playerScript.advQuestionNumber = 0;
+            } else if (playerScript.advQuestionNumber == 2 && playerScript.regularQuestionNumber == 9)
+            {
+                // Regular statements
+                List<int> usableIndices = statements.Keys.ToList();
+                usableIndices.Remove(statementIndex); // Remove the current statement index from the list (so you don't get the same statement twice)
 
-            originalStatement = statements[statementIndex]["statements"]["original"];
-            statementTextInGame.text = originalStatement;
+                while (!usableIndices.Contains(statementIndex))
+                {
+                    statementIndex = Random.Range(1, usableIndices.Count + 1); // Indexes by 1 instead of 0, the way it is in the dict
+                }
 
-            usedQuestions.Clear();
-            usedAdvQuestions.Clear();
+                originalStatement = statements[statementIndex]["statements"]["original"];
+                statementTextInGame.text = originalStatement;
 
-            player.GetComponent<PlayerMoveScript>().regularQuestionNumber = 0;
-            player.GetComponent<PlayerMoveScript>().advQuestionNumber = 0;
+                usedQuestions.Clear();
+                usedAdvQuestions.Clear();
+
+                nextQuestionNumber = 0;
+                nextAdvQuestionNumber = 0;
+
+                playerScript.regularQuestionNumber = 0;
+                playerScript.advQuestionNumber = 3;
+            }
+        } else
+        {
+            if (usedQuestions.Count >= questionsAsList.Length & usedAdvQuestions.Count >= advQuestionsAsList.Length)
+            {
+                // Regular statements
+                List<int> usableIndices = statements.Keys.ToList();
+                usableIndices.Remove(statementIndex); // Remove the current statement index from the list (so you don't get the same statement twice)
+
+                while (!usableIndices.Contains(statementIndex))
+                {
+                    statementIndex = Random.Range(1, usableIndices.Count + 1); // Indexes by 1 instead of 0, the way it is in the dict
+                }
+
+                originalStatement = statements[statementIndex]["statements"]["original"];
+                statementTextInGame.text = originalStatement;
+
+                usedQuestions.Clear();
+                usedAdvQuestions.Clear();
+
+                nextQuestionNumber = 0;
+                nextAdvQuestionNumber = 0;
+
+                playerScript.regularQuestionNumber = 0;
+                playerScript.advQuestionNumber = 0;
+            }
         }
 
         questionText.gameObject.SetActive(true);
@@ -416,8 +495,7 @@ public class LogicSystemScript : MonoBehaviour
         }
     }
 
-    [ContextMenu("Load Data")]
-    public (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, List<string>, Dictionary<string, string>, Dictionary<int, Dictionary<string, string>>, Dictionary<string, string>, List<string>, Dictionary<string, string>) loadDataFromText()
+    public (Dictionary<int, Dictionary<string, Dictionary<string, string>>>, Dictionary<string, Dictionary<string, string>>, string[], Dictionary<string, string>, Dictionary<int, Dictionary<string, string>>, Dictionary<string, string>, string[], Dictionary<string, string>) loadDataFromText()
     {
         string statementsTextWithComments = statementsList.text;
         string advStatementstextWithComments = advancedStatementsList.text;
@@ -601,11 +679,11 @@ public class LogicSystemScript : MonoBehaviour
             }
         }
 
-        return (statements, questions, questionsListToReturn, whatIsExplanations, advancedStatements, advQuestionsDict, advQuestionsList, advExplanationsDict);
+        return (statements, questions, questionsListToReturn.ToArray(), whatIsExplanations, advancedStatements, advQuestionsDict, advQuestionsList.ToArray(), advExplanationsDict);
     }
 
     // Helper methods for loadDataFromText
-    private List<string> splitStringAtNewline(String str) // Splits a string into its lines
+    private List<string> splitStringAtNewline(string str) // Splits a string into its lines
     {
         string[] lines = str.Split(
             new string[] { "\r\n", "\r", "\n" },
@@ -921,7 +999,7 @@ public class LogicSystemScript : MonoBehaviour
                 gameHasStarted = true;
                 if (playerRigidbody.gravityScale == 0)
                 {
-                    playerRigidbody.gravityScale = player.GetComponent<PlayerMoveScript>().gravityScale;
+                    playerRigidbody.gravityScale = playerScript.gravityScale;
                 }
             }
             else if (countdownTimer > 3.5)

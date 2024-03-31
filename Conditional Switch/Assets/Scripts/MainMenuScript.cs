@@ -10,6 +10,7 @@ public class MainMenuScript : MonoBehaviour
     public AudioMixer audioMixer;
 
     public Toggle fullscreenToggle;
+    public Toggle presModeToggle;
     public Slider volumeSlider;
 
     Resolution[] resolutions;
@@ -48,6 +49,17 @@ public class MainMenuScript : MonoBehaviour
 
         audioMixer.SetFloat("volume", PlayerPrefs.GetFloat("volume", 0));
         volumeSlider.value = PlayerPrefs.GetFloat("volume", 0);
+
+        bool presentationMode = PlayerPrefs.GetInt("fullscreen", 0) == 1;
+
+        if (presentationMode == true)
+        {
+            presentationMode = false;
+            PlayerPrefs.SetInt("presentationMode", 0);
+            PlayerPrefs.Save();
+        }
+
+        presModeToggle.isOn = presentationMode;
     }
 
     public void SetResolution(int resolutionIndex)
@@ -71,6 +83,12 @@ public class MainMenuScript : MonoBehaviour
     {
         PlayerPrefs.SetInt("fullscreen", isFullscreen ? 1 : 0);
         Screen.fullScreen = isFullscreen;
+        PlayerPrefs.Save();
+    }
+
+    public void SetPresentationMode(bool isPresentationMode)
+    {
+        PlayerPrefs.SetInt("presentationMode", isPresentationMode ? 1 : 0);
         PlayerPrefs.Save();
     }
 

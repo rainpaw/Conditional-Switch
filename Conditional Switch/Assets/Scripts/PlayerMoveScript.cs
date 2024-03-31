@@ -11,6 +11,8 @@ public class PlayerMoveScript : MonoBehaviour
 
     public float gravityScale = 3f;
 
+    // Max regular: 9
+    //Max adv: 2
     public int regularQuestionNumber = 0;
     public int advQuestionNumber = 0;
 
@@ -37,19 +39,32 @@ public class PlayerMoveScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Saw" | collision.gameObject.tag == "Boundary")
+        switch (collision.gameObject.tag)
         {
-            logic.isDead = true;
-            logic.gameOver();
-            gameObject.SetActive(false);
-        } else if (collision.gameObject.tag == "QuestionMarkBlock")
-        {
-            regularQuestionNumber++;
-            logic.askQuestion(false);
-        } else if (collision.gameObject.tag == "AdvancedQuestionMarkBlock")
-        {
-            advQuestionNumber++;
-            logic.askQuestion(true);
+            case "Saw":
+                if (!logic.isPresentationMode)
+                {
+                    logic.isDead = true;
+                    logic.gameOver();
+                    gameObject.SetActive(false);
+                }
+                break;
+            case "Boundary":
+                if (!logic.isPresentationMode)
+                {
+                    logic.isDead = true;
+                    logic.gameOver();
+                    gameObject.SetActive(false);
+                }
+                break;
+            case "QuestionMarkBlock":
+                regularQuestionNumber++;
+                logic.askQuestion(false);
+                break;
+            case "AdvancedQuestionMarkBlock":
+                advQuestionNumber++;
+                logic.askQuestion(true);
+                break;
         }
     }
 
