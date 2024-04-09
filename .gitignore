@@ -17,8 +17,6 @@
 /[Bb]uilds/[Mm]ac/
 /[Bb]uilds/[Ll]inux/
 
-/[Bb]uilds/WindowsInstallerScript.iss/
-
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/
@@ -69,6 +67,9 @@ sysinfo.txt
 *.aab
 *.unitypackage
 *.app
+
+# Build Scripts
+*.iss
 
 # Crashlytics generated file
 crashlytics-build.properties
