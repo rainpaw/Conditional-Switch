@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -25,8 +26,6 @@ public class MainMenuScript : MonoBehaviour
         bool prefFullscreen = PlayerPrefs.GetInt("fullscreen", 0) == 1;
         Screen.SetResolution(PlayerPrefs.GetInt("resolutionWidth", Screen.currentResolution.width), PlayerPrefs.GetInt("resolutionHeight", Screen.currentResolution.height), prefFullscreen);
 
-        fullscreenToggle.isOn = prefFullscreen;
-
         resolutions = Screen.resolutions;
 
         resolutionDropdown.ClearOptions();
@@ -35,7 +34,8 @@ public class MainMenuScript : MonoBehaviour
 
         for (int i = 0; i < resolutions.Length; i++)
         {
-            string option = resolutions[i].width + " x " + resolutions[i].height + "@" + resolutions[i].refreshRateRatio + "hz";
+
+            string option = resolutions[i].width + " x " + resolutions[i].height + "@" + resolutions[i].refreshRateRatio.value.ToString("0.00") + "hz";
             options.Add(option);
 
             if (resolutions[i].width == Screen.width && resolutions[i].height == Screen.height)
@@ -61,6 +61,7 @@ public class MainMenuScript : MonoBehaviour
         }
 
         presModeToggle.isOn = presentationMode;
+        fullscreenToggle.isOn = prefFullscreen;
 
         highscoreText.text = "Highscore: " + PlayerPrefs.GetInt("highscore", 0).ToString();
     }
@@ -68,7 +69,7 @@ public class MainMenuScript : MonoBehaviour
     public void SetResolution(int resolutionIndex)
     {
         Resolution resolution = resolutions[resolutionIndex];
-        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreen);
+        Screen.SetResolution(resolution.width, resolution.height, Screen.fullScreenMode, resolution.refreshRateRatio);
 
         PlayerPrefs.SetInt("resolutionWidth", resolution.width);
         PlayerPrefs.SetInt("resolutionHeight", resolution.height);
