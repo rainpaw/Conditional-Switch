@@ -13,6 +13,10 @@
 /Conditional\ Switch/[Tt]emp/
 /Conditional\ Switch/[Uu]nityGenerated/
 
+/[Bb]uilds/[Ww]indows/
+/[Bb]uilds/[Mm]ac/
+/[Bb]uilds/[Ll]inux/
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/
