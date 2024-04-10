@@ -7,6 +7,7 @@ A game where you switch gravity to dodge dangerous obstacles while answering que
 [How long did this take you?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#how-long-did-this-take-you)<br>
 [I found a bug. Where can I report this?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#i-found-a-bug-where-can-i-report-this)<br>
 [What features are you planning on adding?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#what-features-are-you-planning-on-adding)<br>
+[Developer Information](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#developer-information)<br>
 
 ## What is this?
 
@@ -29,3 +30,7 @@ Great job! You can report bugs here: https://github.com/rainpaw/Conditional-Swit
 I plan to add some sound, because currently there isn't any music or sound effects and those are a big part of any game. I also plan to add a personal and possibly global highscore list where you can see what your past scores have been.
 
 Thanks for reading down this far, and enjoy the game Conditional Switch!
+
+### Developer Information
+
+This was created in Unity 2022.3.16f1, and it is in IL2CPP, not mono.
