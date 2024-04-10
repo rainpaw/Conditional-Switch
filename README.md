@@ -2,6 +2,7 @@
 
 A game where you switch gravity to dodge dangerous obstacles while answering questions about conditional statements.
 
+## IMPORTANT: If you're here to play, go to the "What is this?" section.
 [What is this?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#what-is-this)<br>
 [Why did you decide to do this?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#why-did-you-decide-to-do-this)<br>
 [How long did this take you?](https://github.com/rainpaw/Conditional-Switch?tab=readme-ov-file#how-long-did-this-take-you)<br>
