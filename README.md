@@ -12,7 +12,7 @@ A game where you switch gravity to dodge dangerous obstacles while answering que
 
 ## What is this?
 
-This is the GitHub repository where all of the source files for this game are stored. If you are just here to play, you don't need to worry about any of the files in the table above. Just navigate to https://github.com/rainpaw/Conditional-Switch/releases and download the file for your platform.
+This is the GitHub repository where all of the source files for this game are stored. If you are just here to play, you don't need to worry about any of the files in the table above. Just navigate to https://github.com/rainpaw/Conditional-Switch/releases and follow the installation instructions for your platform.
 
 ## Why did you decide to do this?
 
