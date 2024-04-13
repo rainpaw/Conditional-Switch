@@ -17,6 +17,7 @@
 /[Bb]uilds/[Ww]indows/
 /[Bb]uilds/[Mm]ac/
 /[Bb]uilds/[Ll]inux/
+/[Bb]uilds/[Ww]eb[Gg][Ll]/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
